@@ -1,0 +1,16 @@
+// prettier-ignore
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",     /* Recommended React Native TSConfig base */
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+    /* Completeness */
+    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    /* Module Resolution Options */
+    "moduleResolution": "node",               /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
+    "paths": {
+      "@app/*": ["./app/*", "./app/*/index"]
+    }                             /* Skip type checking all .d.ts files. */
+  }
+}
