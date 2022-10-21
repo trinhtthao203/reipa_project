@@ -295,6 +295,7 @@ const Helpers = {
         }
     },
 
+
     // isResponseBodyError: (body: IResponseBody): boolean => {
     //     const status = body.StatusCode;
     //     if (status == 200 || status == 201 || status == 202 || status == 404 || status == 417) {

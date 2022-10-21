@@ -9,12 +9,18 @@ export interface IError {
     extras?: any
 }
 
-export interface IUser {
+export interface IUserInfo {
     id?: string;
-    phoneNumber?: string;
-    fullName?: string;
+    phonenumber?: string;
+    password?: string;
+    fullname?: string;
+    address?: string;
+    street_id?: string;
+    ward_id?: String;
     avatar?: string;
-    rightToUse?: number;
+    role_id?: number;
+    created_At?: string;
+    updated_At?: string;
 }
 
 export interface IUserSetting {
@@ -23,4 +29,10 @@ export interface IUserSetting {
     teamName?: string;
     organizationId?: string;
     organizationName?: string;
+}
+
+export interface IRole {
+    id?: string;
+    name?: string;
+    description?: string;
 }

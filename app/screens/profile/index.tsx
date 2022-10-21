@@ -1,22 +1,52 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import styles from "./style"
-import ScreenName from "@app/navigation/screenName";
+import { View, Button } from "react-native"
 import HeaderComp from "@app/components/HeaderComp";
+import ScreenName from "@app/navigation/screenName";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "@app/store";
 
-import { Text, View, Button } from "react-native"
+//interface
+import { IUserInfo } from "../../commons/interfaces";
 
-const Profile = ({ navigation, route }: any) => {
-    const goLogInScreen = () => {
-        navigation.navigate(ScreenName.LOGIN)
+import {
+    storeUserInfo
+} from "../../store/slice/user.slice";
+
+const Profile = ({ navigation }: any) => {
+    const dispatch = useDispatch();
+
+    const { userInfo } = useSelector(
+        (state: RootState) => state.user
+    );
+    const [pnStorage, setPnStorage] = useState();
+    const [pwStorage, setPwStorage] = useState();
+    AsyncStorage.getItem("phonenumber").then((val: any) => {
+        setPnStorage(val);
+    })
+
+    AsyncStorage.getItem("password").then((val: any) => {
+        setPwStorage(val);
+    })
+
+    const handleLogOut = async () => {
+        dispatch(storeUserInfo({
+            id: "",
+            phonenumber: "",
+            fullname: "",
+            avatar: "",
+            street_id: "",
+            ward_id: "",
+            role_id: ""
+        }))
+        navigation.navigate(ScreenName.HOME)
     }
 
-    const goProfile = () => {
-        navigation.navigate(ScreenName.PROFILE)
-    }
     return (
         <View style={styles.container}>
             <HeaderComp text="Home" height={17} />
-            <Button onPress={goLogInScreen} title="Đăng nhập" />
+            <Button onPress={handleLogOut} title="Đăng xuất" />
         </View>
     )
 }

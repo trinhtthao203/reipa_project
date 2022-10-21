@@ -1,15 +1,19 @@
 import React from 'react';
 import ScreenName from './screenName';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from "react-native"
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@app/store";
 
-import { Home, AddPost, Profile } from "../screens"
-import { Icon } from '@rneui/base';
+import { Home, AddPost, Profile, LogIn } from "../screens"
 import Constants from '@app/constants';
+import { Icon } from '@rneui/base';
 
 const Tab = createBottomTabNavigator();
 
 function TabNavigation() {
+    const { userInfo } = useSelector(
+        (state: RootState) => state.user
+    );
     return (
         <Tab.Navigator initialRouteName={ScreenName.HOME}
             screenOptions={{
@@ -47,7 +51,7 @@ function TabNavigation() {
                 }}
             />
             <Tab.Screen
-                name={ScreenName.PROFILE} component={Profile}
+                name={userInfo.id ? ScreenName.PROFILE : ScreenName.LOGIN} component={userInfo.id ? Profile : LogIn}
                 options={{
                     tabBarIcon: ({ focused }) => {
                         return (

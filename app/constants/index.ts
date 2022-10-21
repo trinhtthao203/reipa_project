@@ -1,7 +1,7 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-const DOMAIN = "http://172.104.185.236:3010"; // LIVE
+const DOMAIN = "http://10.10.35.96:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -39,9 +39,19 @@ const Constants = {
    * Setting path for Api
    */
   ApiPath: {
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    CHECK_PHONENUMBER: "/auth/check-phonenumber",
+    RESET_PASSWORD: "/auth/reset-password",
     USER_INFO: "User/UserInfo",
     UPDATE_PROFILE: "User/UpdateProfile",
     UPDATE_PASSWORD: "User/ChangePassword",
+    GET_ALL_ROLE: "/roles/get-all",
+    GET_ALL_PROVINCE: "/provinces/get-all",
+    GET_DISTRICT_BY_PROVINCE: "/districts/get-by-province",
+    GET_ALL_WARD: "/wards/get-all",
+    GET_WARD_SIGN_UP: "/wards/sign-up",
+    GET_STREET_SIGN_UP: "/streets/sign-up",
   },
 
   Styles: {
@@ -52,6 +62,7 @@ const Constants = {
     COLOR_GHOST: "#737373",
     COLOR_BLACK: "#201E11",
     CORLOR_WHITE: "#F6FAFB",
+    CORLOR_ERROR: "#ED4337",
 
     HORIZONTAL_SPACE_SIZE: 16,
     HORIZONTAL_SPACE_SIZE_LARGE: 32,
@@ -67,7 +78,7 @@ const Constants = {
     NAVIGATION_BAR_HEIGHT: 48,
 
     LOGO_HEIGHT: 70,
-    TEXT_INPUT_HEIGHT: 55,
+    TEXT_INPUT_HEIGHT: 60,
 
     BORDER_COLOR: "#F2F2F2",
 
@@ -99,12 +110,8 @@ const Constants = {
       `((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/`,
     ),
     /** https://gist.github.com/HarishChaudhari/0dd5514ce430991a1b1b8fa04e8b72a4 */
-    PASSWORD: new RegExp(
-      `/^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/`,
-    ),
-    // PHONE_NUMBER: new RegExp(`/^(09|01|08|03|07|05[0-9])+([0-9]{8,9})$/`),
-    // PHONE_NUMBER: new RegExp(`/^0(1\d{9}|9\d{8})$/`),
-    PHONE_NUMBER: new RegExp(/^(?:0)?([1|3|5|7|8|9]{1})?([0-9]{8})$/),
+    PASSWORD: new RegExp(`/^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[\w!@#$%^&*]{8,}$/`),
+    PHONE_NUMBER: new RegExp(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/),
   },
 
   /**

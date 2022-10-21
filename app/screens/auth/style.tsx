@@ -24,33 +24,15 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: Constants.Styles.HORIZONTAL_SPACE_SIZE_LARGE
     },
-    text_input_top: {
-        height: Constants.Styles.TEXT_INPUT_HEIGHT,
-        marginHorizontal: Constants.Styles.HORIZONTAL_SPACE_SIZE_LARGE,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        backgroundColor: Constants.Styles.CORLOR_WHITE,
-        width: "85%"
-    },
-    text_input: {
-        borderTopLeftRadius: 0,
-        borderTopRightRadius: 0,
-        height: Constants.Styles.TEXT_INPUT_HEIGHT,
-        marginHorizontal: Constants.Styles.HORIZONTAL_SPACE_SIZE_LARGE,
-        backgroundColor: Constants.Styles.CORLOR_WHITE,
-        width: "85%"
-    },
     btn_icon: {
         name: 'angle-right',
         type: Constants.Styles.ICON_STYLE_FONT_AWESOME,
         size: Constants.Styles.ICON_SIZE_SMALL,
         color: Constants.Styles.COLOR_BLACK,
     },
-    btn_icon_container: {
-
-    },
     btn_title: {
-        fontWeight: "500",
+        fontWeight: "600",
+        fontSize: 18,
         color: Constants.Styles.COLOR_BLACK,
         textTransform: "uppercase",
         width: "90%",
@@ -70,10 +52,50 @@ const styles = StyleSheet.create({
     text_isaccount: {
         textAlign: "center",
         color: Constants.Styles.CORLOR_WHITE,
+        fontSize: Constants.Styles.FONT_SIZE_DEFAULT,
+    },
+    text_msg_from_server: {
+        textAlign: "center",
+        color: Constants.Styles.CORLOR_ERROR,
         fontSize: Constants.Styles.FONT_SIZE_MEDIUM,
     },
-    text_isaccount_container: {
-        marginVertical: Constants.Styles.VERTICAL_SPACE_SIZE_LARGE,
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        textAlign: "center"
+    },
+    modalView: {
+        height: "50%",
+        width: "90%",
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    buttonClose: {
+        display: "flex",
+        paddingLeft: "80%",
+        backgroundColor: "rgba(0, 0, 0, 0.0)"
+    },
+    textStyle: {
+        color: Constants.Styles.COLOR_GHOST,
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
     }
 
 })
