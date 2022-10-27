@@ -1,7 +1,7 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-const DOMAIN = "http://10.10.35.96:8080"; // LIVE
+const DOMAIN = "http://10.10.35.170:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -48,20 +48,27 @@ const Constants = {
     UPDATE_PASSWORD: "User/ChangePassword",
     GET_ALL_ROLE: "/roles/get-all",
     GET_ALL_PROVINCE: "/provinces/get-all",
+    GET_BORDER_PROVINCE: "/provinces/get-border-province",
+
     GET_DISTRICT_BY_PROVINCE: "/districts/get-by-province",
-    GET_ALL_WARD: "/wards/get-all",
+
     GET_WARD_SIGN_UP: "/wards/sign-up",
+
+    GET_ALL_WARD: "/wards/get-all",
     GET_STREET_SIGN_UP: "/streets/sign-up",
+
+    GET_ALL_PLANNING_AREA: "/get_all_planning_areas",
+
   },
 
   Styles: {
 
     COLOR_CHETWODE_BLUE: "#878DE1",
     COLOR_AMBER: "#F7C005",
-    COLOR_ATHENSGRAY: "#EEEEF0",
+    COLOR_ATHENSGRAY: "#F2F2F2",
     COLOR_GHOST: "#737373",
     COLOR_BLACK: "#201E11",
-    CORLOR_WHITE: "#F6FAFB",
+    CORLOR_WHITE: "#FFFFFF",
     CORLOR_ERROR: "#ED4337",
 
     HORIZONTAL_SPACE_SIZE: 16,
@@ -79,8 +86,10 @@ const Constants = {
 
     LOGO_HEIGHT: 70,
     TEXT_INPUT_HEIGHT: 60,
+    TEXT_INPUT_FONTSIZE: 18,
 
     BORDER_COLOR: "#F2F2F2",
+    BORDER_RADIUS: 7,
 
     FONT_SIZE_SMALL: 13,
     FONT_SIZE_DEFAULT: 14,

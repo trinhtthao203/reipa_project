@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     error_info: {
-        // marginTop: 10,
         color: Constants.Styles.CORLOR_ERROR,
         marginHorizontal: 15,
         fontSize: 12

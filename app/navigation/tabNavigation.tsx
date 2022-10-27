@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@app/store";
 
-import { Home, AddPost, Profile, LogIn } from "../screens"
+import { Home, MainPost, Profile, LogIn } from "../screens"
 import Constants from '@app/constants';
 import { Icon } from '@rneui/base';
 
@@ -36,7 +36,7 @@ function TabNavigation() {
                 }}
             />
             <Tab.Screen
-                name={ScreenName.ADDPOST} component={AddPost}
+                name={ScreenName.MAINPOST} component={MainPost}
                 options={{
                     tabBarIcon: ({ focused }) => {
                         return (

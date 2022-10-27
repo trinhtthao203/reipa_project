@@ -231,16 +231,16 @@ const LogIn = ({ navigation }: any) => {
                     checkedColor={Constants.Styles.COLOR_AMBER}
                 />
                 <Button
-                    title={Strings.Auth.FORGET_PASSWORD}
                     type="clear"
+                    title={Strings.Auth.FORGET_PASSWORD}
                     titleStyle={styles.text_isaccount}
                     onPress={() => { navigation.navigate(ScreenName.FORGETPASSWORD) }}
                 />
                 <Button
-                    title={Strings.Auth.NOTACCOUNT}
                     type="clear"
+                    title={Strings.Auth.NOTACCOUNT}
                     titleStyle={styles.text_isaccount}
-                    onPress={() => { navigation.navigate(ScreenName.OPTIONROLE) }}
+                    onPress={() => { navigation.navigate(ScreenName.SIGNUP) }}
                 />
             </View>
             <DialogCustom

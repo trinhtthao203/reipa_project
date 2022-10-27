@@ -8,5 +8,7 @@ export default {
     PROFILESCREEN: "ProfileScreen",
     POSTDETAIL: "PostDetail",
     ADDPOST: "AddPost",
+    MAINPOST: "MainPost",
+    ADDPLANNINGAREA: "AddPlanningArea",
     TABS: "Tabs"
 }

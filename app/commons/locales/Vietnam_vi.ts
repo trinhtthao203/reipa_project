@@ -58,6 +58,28 @@ export default {
         DETAIL: "Chi tiết"
     },
 
+    PlanningArea: {
+        TITLE: "Vùng quy hoạch",
+        ADD_PLANNING_AREA: "Tạo vùng quy hoạch mới",
+        NAME: "Tên vùng quy hoạch",
+        ADDRESS: "Địa chỉ",
+        FUNCTION: "Chức năng",
+        AREA: "Diện tích",
+        PROVINCE: "Tỉnh/TP",
+        DISTRICT: "Quận/Huyện",
+        WARD: "Phường/Xã",
+        TYPEOFPLANNINGAREA: "Loại vùng quy hoạch",
+        DEFINE_LOCATION: "Xác định vùng quy hoạch trên bản đồ",
+        BUTTON_DEFINE_LOCATION: "Nhấn vào đây để xác định vị trí trên bản đồ",
+        NAME_REQUIRE_MESSAGE: "Vui lòng nhập tên vùng quy hoạch",
+        FUNCTION_REQUIRE_MESSAGE: "Vui lòng nhập chức năng vùng quy hoạch",
+        PROVINCE_REQUIRE_MESSAGE: "Vui lòng nhập tỉnh/thành phố của vùng quy hoạch",
+        DISTRICT_REQUIRE_MESSAGE: "Vui lòng nhập quận/huyện của vùng quy hoạch",
+        WARD_REQUIRE_MESSAGE: "Vui lòng nhập phường/xã của vùng quy hoạch",
+        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích vùng quy hoạch",
+        LOCATION_REQUIRE_MESSAGE: "Vui lòng chọn vị trí vùng quy hoạch",
+    },
+
     Absence: {
         TITLE: "Nghỉ phép"
     },

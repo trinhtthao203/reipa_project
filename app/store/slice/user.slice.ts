@@ -19,7 +19,7 @@ const initialState: UserState = {
         address: "",
         street_id: "",
         ward_id: "",
-        role_id: 3,
+        role_id: 2,
     }
 };
 

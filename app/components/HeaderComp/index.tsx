@@ -19,15 +19,16 @@ const HeaderComp = ({ goBack, title, height }: any) => {
             {!!goBack ? <TouchableOpacity
                 onPress={!!goBack ? goBack : () => navigation.goBack()}
             >
-                <Icon name="arrow-back" type={Constants.Styles.ICON_STYLE_FONT_IONICON} iconStyle={{ color: Constants.Styles.CORLOR_WHITE, marginBottom: 10, marginHorizontal: 10 }} />
+                <Icon name="arrow-back" type={Constants.Styles.ICON_STYLE_FONT_IONICON} iconStyle={{ color: Constants.Styles.CORLOR_WHITE, marginTop: 20, marginBottom: 5 }} />
             </TouchableOpacity> : <Text />}
             <Text
                 style={{
                     color: Constants.Styles.CORLOR_WHITE,
                     fontWeight: "500",
                     textTransform: "uppercase",
+                    marginTop: 20,
                     marginHorizontal: 20,
-                    fontSize: Constants.Styles.FONT_SIZE_MEDIUM
+                    fontSize: 16
                 }}
             >
                 {title}

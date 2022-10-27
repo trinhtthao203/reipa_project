@@ -2,11 +2,9 @@
 import React from "react"
 import styles from "./style"
 import Constants from "@app/constants";
-import { RootState } from "@app/store";
 import Strings from "@app/commons/strings";
 import ScreenName from "@app/navigation/screenName";
 import { useDispatch, useSelector } from "react-redux";
-import { IUserInfo } from "../../commons/interfaces"
 
 //component
 import { Button, Icon, ListItem, Avatar } from "@rneui/themed";
@@ -20,7 +18,6 @@ import { House, Logo } from "@app/assets/images";
 //function
 import SelectList from "react-native-dropdown-select-list";
 import UserService from "@app/services/user.service";
-import { HelperText } from "react-native-paper";
 const userService = new UserService();
 
 interface IData {
@@ -55,9 +52,6 @@ interface IErrorUserInfo {
 const SignUp = ({ navigation }: any) => {
     const dispatch = useDispatch();
 
-    const { signUpInfo } = useSelector(
-        (state: RootState) => state.user
-    );
     const [showDialog, setShowDialog] = React.useState(false);
     const [typeDialog, setTypeDialog] = React.useState("");
     const [contentDialog, setContentDialog] = React.useState("");
@@ -73,7 +67,7 @@ const SignUp = ({ navigation }: any) => {
         district_id: "",
         street_id: "",
         ward_id: "",
-        role_id: signUpInfo.role_id,
+        role_id: 2,
         showPassword: false,
         showConfirmPassword: false
     });
