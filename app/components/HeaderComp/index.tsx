@@ -4,8 +4,7 @@ import { Text, TouchableOpacity, View, StatusBar } from 'react-native';
 import { Icon } from "@rneui/base";
 import Constants from "@app/constants";
 
-
-const HeaderComp = ({ goBack, title, height }: any) => {
+const HeaderComp = ({ goBack, title, height, refresh, func }: any) => {
     const navigation = useNavigation()
     return (
         <View
@@ -33,7 +32,11 @@ const HeaderComp = ({ goBack, title, height }: any) => {
             >
                 {title}
             </Text>
-            <Text />
+            {!!refresh ? <TouchableOpacity
+                onPress={func}
+            >
+                <Icon name="refresh" type={Constants.Styles.ICON_STYLE_FONT_IONICON} iconStyle={{ color: Constants.Styles.CORLOR_WHITE, marginTop: 20, marginBottom: 5 }} />
+            </TouchableOpacity> : <Text />}
         </View>
     )
 }

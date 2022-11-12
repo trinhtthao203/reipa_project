@@ -2,9 +2,9 @@ import Constants from "../constants";
 import * as apiProcessor from "./apiProcessor";
 
 class Province {
-    handleGetBorderProvinces = async (id) => {
+    handleGetBorderProvince = async (id) => {
         try {
-            const result = apiProcessor.post(Constants.ApiPath.GET_BORDER_PROVINCE, {
+            const result = apiProcessor.post(Constants.ApiPath.GET_GEOJSON_BORDER_PROVINCE_BY_ID, {
                 id: id
             });
             return result;

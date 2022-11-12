@@ -15,6 +15,8 @@ export default {
     },
 
     Message: {
+        ACCESS_FINE_LOCATION_MESSAGE: "Vui lòng mở Vị trí để sử dụng các tiện ích của ứng dụng",
+        ACCESS_CAMERA_MESSAGE: "Vui lòng bật quyền truy cập Camera để sử dụng các tiện ích của ứng dụng",
         REGISTER_SUCCESS_MESSAGE: "Đăng ký thành công",
         WAITTING_MESSAGE: "Vui lòng chờ trong giây lát",
         COMMON_ERROR: "Đã có lỗi xảy ra. Vui lòng thử lại",
@@ -58,33 +60,35 @@ export default {
         DETAIL: "Chi tiết"
     },
 
-    PlanningArea: {
-        TITLE: "Vùng quy hoạch",
-        ADD_PLANNING_AREA: "Tạo vùng quy hoạch mới",
-        NAME: "Tên vùng quy hoạch",
+    Zoning: {
+        TITLE: "Quy hoạch",
+        ADD_ZONING: "Tạo quy hoạch mới",
+        NAME: "Tên quy hoạch",
         ADDRESS: "Địa chỉ",
-        FUNCTION: "Chức năng",
-        AREA: "Diện tích",
-        PROVINCE: "Tỉnh/TP",
-        DISTRICT: "Quận/Huyện",
-        WARD: "Phường/Xã",
-        TYPEOFPLANNINGAREA: "Loại vùng quy hoạch",
-        DEFINE_LOCATION: "Xác định vùng quy hoạch trên bản đồ",
-        BUTTON_DEFINE_LOCATION: "Nhấn vào đây để xác định vị trí trên bản đồ",
-        NAME_REQUIRE_MESSAGE: "Vui lòng nhập tên vùng quy hoạch",
-        FUNCTION_REQUIRE_MESSAGE: "Vui lòng nhập chức năng vùng quy hoạch",
-        PROVINCE_REQUIRE_MESSAGE: "Vui lòng nhập tỉnh/thành phố của vùng quy hoạch",
-        DISTRICT_REQUIRE_MESSAGE: "Vui lòng nhập quận/huyện của vùng quy hoạch",
-        WARD_REQUIRE_MESSAGE: "Vui lòng nhập phường/xã của vùng quy hoạch",
-        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích vùng quy hoạch",
-        LOCATION_REQUIRE_MESSAGE: "Vui lòng chọn vị trí vùng quy hoạch",
+        PURPOSE: "Mục đích",
+        AREA: "Diện tích(m2)",
+        WIDTH: "Chiều rộng(m2)",
+        LENGTH: "Chiều dài(m)",
+        PROVINCE: "Chọn Tỉnh/TP",
+        DISTRICT: "Chọn Quận/Huyện",
+        WARD: "Chọn Phường/Xã",
+        TYPEOFZONING: "Loại quy hoạch",
+        DEFINE_LOCATION: "Xác định quy hoạch trên bản đồ",
+        BUTTON_DEFINE_LOCATION: "Nhấn vào đây để xác định tọa độ trên bản đồ",
+        NAME_REQUIRE_MESSAGE: "Vui lòng nhập tên quy hoạch",
+        PURPOSE_REQUIRE_MESSAGE: "Vui lòng nhập chức năng quy hoạch",
+        DATA_IMAGE_REQUIRE_MESSAGE: "Vui lòng chọn hình ảnh",
+        PROVINCE_REQUIRE_MESSAGE: "Vui lòng nhập tỉnh/thành phố của quy hoạch",
+        DISTRICT_REQUIRE_MESSAGE: "Vui lòng nhập quận/huyện của quy hoạch",
+        WARD_REQUIRE_MESSAGE: "Vui lòng nhập phường/xã của quy hoạch",
+        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích quy hoạch",
+        LOCATION_REQUIRE_MESSAGE: "Vui lòng chọn tọa độ quy hoạch",
+        ADDRESS_REQUIRE_MESSAGE: "Vui lòng nhập địa chỉ quy hoạch",
+        WARNING_MAX_IMAGE: "Vui lòng chọn không quá 10 ảnh",
+        ADD_SUCCESS_MESSAGE: "Thêm quy hoạch thành công"
     },
 
-    Absence: {
-        TITLE: "Nghỉ phép"
-    },
-
-    Profile: {
-        TITLE: "Tài khoản"
+    Typeof_zoning: {
+        TITLE: "Loại quy hoạch"
     }
 }

@@ -5,7 +5,7 @@ import Constants from "@app/constants";
 import Strings from "@app/commons/strings";
 import ScreenName from "@app/navigation/screenName";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Picker } from "@react-native-picker/picker";
 //component
 import { Button, Icon, ListItem, Avatar } from "@rneui/themed";
 import InputCustom from "@app/components/Input";
@@ -56,17 +56,7 @@ const SignUp = ({ navigation }: any) => {
     const [typeDialog, setTypeDialog] = React.useState("");
     const [contentDialog, setContentDialog] = React.useState("");
 
-    const [selected, setSelected] = React.useState("");
     const [userInfo, setUserInfo] = React.useState<IData>({
-        phonenumber: "",
-        password: "",
-        fullname: "",
-        address: "",
-        confirmPassword: "",
-        province_id: "",
-        district_id: "",
-        street_id: "",
-        ward_id: "",
         role_id: 2,
         showPassword: false,
         showConfirmPassword: false
@@ -269,10 +259,7 @@ const SignUp = ({ navigation }: any) => {
     const handleGetProvinceList = async () => {
         try {
             const result = await userService.handleGetProvinceList();
-            let newArray = result.data.provinces.map((item: any) => {
-                return { key: item.id, value: item.name }
-            })
-            setProvinceData(newArray)
+            setProvinceData(result.data.provinces);
         } catch (err) {
             console.log(err);
         }
@@ -280,13 +267,9 @@ const SignUp = ({ navigation }: any) => {
 
     const [districtData, setDistrictData] = React.useState([]);
     const handleGetDistrict = async (province_id: any) => {
-        console.log(userInfo.province_id);
         try {
             const result = await userService.handleGetDistrictByProvince(province_id);
-            let newArray = result.data.district.map((item: any) => {
-                return { key: item.id, value: item.name }
-            })
-            setDistrictData(newArray);
+            setDistrictData(result.data.district);
         } catch (err) {
             console.log(err);
         }
@@ -296,10 +279,7 @@ const SignUp = ({ navigation }: any) => {
     const handleGetWard = async (province_id: any, district_id: any) => {
         try {
             const result = await userService.handleGetWardList(province_id, district_id);
-            let newArray = result.data.ward.map((item: any) => {
-                return { key: item.id, value: item.name }
-            })
-            setWardData(newArray);
+            setWardData(result.data.ward);
         } catch (err) {
             console.log(err);
         }
@@ -309,13 +289,29 @@ const SignUp = ({ navigation }: any) => {
     const handleGetStreet = async (province_id: any, district_id: any) => {
         try {
             const result = await userService.handleGetStreetList(province_id, district_id);
-            let newArray = result.data.streets.map((item: any) => {
-                return { key: item.id, value: item.name }
-            })
-            setStreetData(newArray);
+            setStreetData(result.data.streets);
         } catch (err) {
             console.log(err);
         }
+    }
+
+    const handleClickProvince = (selected: any) => {
+        updateUserInfo({ province_id: selected });
+        handleGetDistrict(selected);
+    }
+
+    const handleClickDistrict = (selected: any) => {
+        updateUserInfo({ district_id: selected });
+        handleGetWard(userInfo.province_id, selected);
+        handleGetStreet(userInfo.province_id, selected);
+    }
+
+    const handleClickWard = (selected: any) => {
+        updateUserInfo({ ward_id: selected });
+    }
+
+    const handleClickStreet = (selected: any) => {
+        updateUserInfo({ street_id: selected });
     }
 
     React.useEffect(() => {
@@ -354,6 +350,70 @@ const SignUp = ({ navigation }: any) => {
                         onChangeText={(val: any) => { updateUserInfo({ fullname: val }) }}
                     />
                     <View style={{ width: "85%", marginHorizontal: 32, backgroundColor: Constants.Styles.CORLOR_WHITE }}>
+                        <Text style={styles.label_dropdown_style}>Tỉnh/Thành Phố</Text>
+                        <Picker
+                            selectedValue={userInfo.province_id}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickProvince(itemValue)
+                            }
+                        >
+                            {provinceData &&
+                                provinceData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                        {errorUserInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorProvinceMsg}</Text>}
+                        <Text style={styles.label_dropdown_style}>Quận/Huyện</Text>
+                        <Picker
+                            selectedValue={userInfo.district_id}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickDistrict(itemValue)
+                            }
+                        >
+                            {districtData &&
+                                districtData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                        {errorUserInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorDistrictMsg}</Text>}
+                        <Text style={styles.label_dropdown_style}>Xã/Phường</Text>
+                        <Picker
+                            selectedValue={userInfo.ward_id}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickWard(itemValue)}
+                        >
+                            {wardData &&
+                                wardData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                        {errorUserInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorWardMsg}</Text>}
+                        <Text style={styles.label_dropdown_style}>Đường</Text>
+                        <Picker
+                            selectedValue={userInfo.street_id}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickStreet(itemValue)}
+                        >
+                            {streetData &&
+                                streetData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                        {errorUserInfo.errorStreetMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorStreetMsg}</Text>}
+                    </View>
+                    {/* <View style={{ width: "85%", marginHorizontal: 32, backgroundColor: Constants.Styles.CORLOR_WHITE }}>
                         <SelectList
                             maxHeight={250}
                             placeholder={"Chọn Tỉnh/ Thành phố *"}
@@ -413,7 +473,7 @@ const SignUp = ({ navigation }: any) => {
                                 updateUserInfo({ street_id: selected });
                             }}
                         />}
-                    </View>
+                    </View> */}
                     <InputCustom
                         secure={false}
                         value={userInfo.address}
@@ -462,7 +522,7 @@ const SignUp = ({ navigation }: any) => {
                     content={contentDialog}
                     onPressIn={() => setShowDialog(false)}
                 />
-            </View>
+            </View >
         </ImageBackground >
     )
 }

@@ -64,12 +64,12 @@ const MainPost = ({ navigation }: any) => {
                             activeOpacity={0.6}
                             buttonStyle={styles.btn_step1_container}
                             onPress={() => {
-                                navigation.navigate(ScreenName.ADDPLANNINGAREA)
+                                navigation.navigate(ScreenName.ADDZONING)
                             }}
                         >
                             <View>
                                 <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="layers-outline" color={Constants.Styles.COLOR_CHETWODE_BLUE} size={30} />
-                                <Text style={styles.text_step1_title} >Tạo vùng quy hoạch mới</Text>
+                                <Text style={styles.text_step1_title} >Tạo quy hoạch mới</Text>
                             </View>
                         </Button>
                     </View>

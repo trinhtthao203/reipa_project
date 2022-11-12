@@ -16,6 +16,13 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: Constants.Styles.COLOR_BLACK,
     },
+    label_dropdown_style: {
+        fontWeight: "bold",
+        fontSize: 12,
+        color: Constants.Styles.COLOR_BLACK,
+        marginTop: 10,
+        marginLeft: 10
+    },
     btn_step1_container: {
         margin: 10,
         borderRadius: 10,
@@ -33,7 +40,7 @@ const styles = StyleSheet.create({
         color: Constants.Styles.CORLOR_ERROR,
         marginHorizontal: 15,
         fontSize: 12,
-    }
+    },
 })
 
 export default styles

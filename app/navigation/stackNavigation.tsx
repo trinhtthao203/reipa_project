@@ -2,6 +2,7 @@ import React from 'react';
 import ScreenName from './screenName';
 import TabNavigation from './tabNavigation';
 import { LogIn, SignUp, PostDetail, ForgetPassword, OptionRole, AddPlanningArea, AddPost } from '../screens';
+import AddZoning from '@app/screens/post/addZoning';
 
 export default function (Stack: any) {
     return (
@@ -32,8 +33,8 @@ export default function (Stack: any) {
             />
 
             <Stack.Screen
-                name={ScreenName.ADDPLANNINGAREA}
-                component={AddPlanningArea}
+                name={ScreenName.ADDZONING}
+                component={AddZoning}
             />
 
             <Stack.Screen

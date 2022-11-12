@@ -1,7 +1,7 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-const DOMAIN = "http://10.10.35.170:8080"; // LIVE
+const DOMAIN = "http://10.10.38.68:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -9,12 +9,13 @@ const Constants = {
   Api: {
     /** Root URL of Api Server */
     BASE_URL: `${DOMAIN}/api`,
+    FILES_URL: `${DOMAIN}/files`,
+    IMAGES_URL: `${DOMAIN}/images`,
     CLIENT_CERT: null,
     CLIENT_ID: null,
     CLIENT_KEY: null,
     /** Timeout for each request: 15sec */
     TIMEOUT: 15 * 1000,
-    IMAGE_URL: "",
   },
 
   /**
@@ -47,18 +48,35 @@ const Constants = {
     UPDATE_PROFILE: "User/UpdateProfile",
     UPDATE_PASSWORD: "User/ChangePassword",
     GET_ALL_ROLE: "/roles/get-all",
-    GET_ALL_PROVINCE: "/provinces/get-all",
-    GET_BORDER_PROVINCE: "/provinces/get-border-province",
 
-    GET_DISTRICT_BY_PROVINCE: "/districts/get-by-province",
-
-    GET_WARD_SIGN_UP: "/wards/sign-up",
-
-    GET_ALL_WARD: "/wards/get-all",
     GET_STREET_SIGN_UP: "/streets/sign-up",
 
-    GET_ALL_PLANNING_AREA: "/get_all_planning_areas",
+    GET_ALL_WARD: "/wards/get-all",
+    GET_WARD_SIGN_UP: "/wards/sign-up",
+    GET_GEOJSON_BORDER_WARD_BY_ID: "/wards/geojson-border-ward-by-id",
 
+    GET_ALL_PROVINCE: "/provinces/get-all",
+    GET_BORDER_PROVINCE: "/provinces/get-border-province",
+    GET_GEOJSON_BORDER_PROVINCE_BY_ID: "/provinces/geojson-border-province-by-id",
+
+    GET_DISTRICT_BY_PROVINCE: "/districts/get-by-province",
+    GET_GEOJSON_BORDER_DISTRICT_BY_ID: "/districts/geojson-border-district-by-id",
+
+    GET_ALL_ZONING: "/zoning/get_all_zonings",
+    GET_ALL_ZONING_GEOJSON: "/zoning/geojson_zonings",
+    GET_ALL_ZONING_GEOJSON_POLYGON: "/zoning/geojson_zonings_polygon",
+    GET_ALL_ZONING_GEOJSON_POLYLINE: "/zoning/geojson_zonings_polyline",
+    GET_ALL_ZONING_POLYGON_BY_ID: "/zoning/zonings_polygon_id",
+    GET_ALL_ZONING_POLYLINE_LATLNG_DISTANCE: "/zoning/zonings_polyline_by_distance",
+    ADD_ZONING: "/zoning/add_zonings",
+
+    GET_ALL_INVESTOR: "/investor/get_all_investor",
+    GET_ALL_TYPE_ZONING: "/type_of_zoning/get_all_type",
+
+    GET_ONE_IMAGE_BY_ZONING_ID: "/images/get_one_by_zoning_id",
+    GET_ONE_IMAGE_BY_POST_ID: "/images/get_one_by_post_id",
+
+    GET_POST_BY_DISTANCE: "/post/post_by_distance_latlng"
   },
 
   Styles: {

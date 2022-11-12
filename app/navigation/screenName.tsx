@@ -9,6 +9,6 @@ export default {
     POSTDETAIL: "PostDetail",
     ADDPOST: "AddPost",
     MAINPOST: "MainPost",
-    ADDPLANNINGAREA: "AddPlanningArea",
+    ADDZONING: "AddPZoning",
     TABS: "Tabs"
 }

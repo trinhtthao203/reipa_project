@@ -12,8 +12,7 @@ interface IProps extends InputProps {
     radiusType?: string;
     onChangeText: (value: any) => void;
     placeholder?: string;
-    type?: string;
-    value?: string;
+    value?: any;
     label?: string;
 }
 

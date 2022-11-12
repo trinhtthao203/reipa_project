@@ -13,7 +13,6 @@ export const get = async (path: string, options = {}) => {
 export const post = async (path: string, options = {}) => {
     const response = await APIProcessor.post(path, options);
     return response.data;
-
 }
 
 export default APIProcessor; 

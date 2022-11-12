@@ -11,6 +11,12 @@
     "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "@app/*": ["./app/*", "./app/*/index"]
-    }                             /* Skip type checking all .d.ts files. */
+    },
+    // "target": "es6",
+    // "lib": [
+    //   "es2019",
+    //   "dom",
+    //   "dom.iterable" // <- there you are
+    // ],                             /* Skip type checking all .d.ts files. */
   }
 }
