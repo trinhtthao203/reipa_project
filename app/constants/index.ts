@@ -1,7 +1,7 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-const DOMAIN = "http://10.10.38.68:8080"; // LIVE
+const DOMAIN = "http://10.1.15.109:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -67,23 +67,41 @@ const Constants = {
     GET_ALL_ZONING_GEOJSON_POLYGON: "/zoning/geojson_zonings_polygon",
     GET_ALL_ZONING_GEOJSON_POLYLINE: "/zoning/geojson_zonings_polyline",
     GET_ALL_ZONING_POLYGON_BY_ID: "/zoning/zonings_polygon_id",
+    GET_ALL_ZONING_BY_USER_ID: "/zoning/get_by_user_id",
     GET_ALL_ZONING_POLYLINE_LATLNG_DISTANCE: "/zoning/zonings_polyline_by_distance",
+    GET_ZONING_BY_ID: "/zoning/get_by_id",
     ADD_ZONING: "/zoning/add_zonings",
+    DELETE_ZONING: "/zoning/delete_zonings",
+    ADD_POST: "/post/add_post",
 
     GET_ALL_INVESTOR: "/investor/get_all_investor",
     GET_ALL_TYPE_ZONING: "/type_of_zoning/get_all_type",
 
+    GET_ALL_IMAGE_BY_ZONING_ID: "/images/get_all_by_zoning_id",
+    GET_ALL_IMAGE_BY_POST_ID: "/images/get_all_by_post_id",
     GET_ONE_IMAGE_BY_ZONING_ID: "/images/get_one_by_zoning_id",
     GET_ONE_IMAGE_BY_POST_ID: "/images/get_one_by_post_id",
 
-    GET_POST_BY_DISTANCE: "/post/post_by_distance_latlng"
+    GET_POST_BY_DISTANCE: "/post/post_by_distance_latlng",
+    GET_POST_BY_ID: "/post/get_by_id",
+    GET_GEOJSON_POST: "/post/geojson_post",
+
+    GET_ADDRESS_BY_LATLNG: "/get_address_by_latlng",
+
+    GET_TYPEOF_POST: "/post/type_of_post",
+    GET_TYPEOF_REAL_ESTATE: "/post/type_of_real_estate",
+    GET_JURIDICAL: "/post/juridical",
+    GET_FURNITURE: "/post/furniture",
   },
 
   Styles: {
 
+    SIZE_AVATAR: 60,
+
     COLOR_CHETWODE_BLUE: "#878DE1",
     COLOR_AMBER: "#F7C005",
     COLOR_ATHENSGRAY: "#F2F2F2",
+    COLOR_DARKGRAY: "#b2bec3",
     COLOR_GHOST: "#737373",
     COLOR_BLACK: "#201E11",
     CORLOR_WHITE: "#FFFFFF",

@@ -159,13 +159,19 @@ const LogIn = ({ navigation }: any) => {
                         AsyncStorage.setItem("password", userInfo.password || "");
                     }
                     const userData: IUserInfo = {
-                        id: result.data.id,
-                        phonenumber: result.data.phonenumber,
-                        fullname: result.data.fullname,
-                        avatar: result.data.avatar,
-                        street_id: result.data.street_id,
-                        ward_id: result.data.ward_id,
-                        role_id: result.data.role_id,
+                        id: result.data.userInfo.id,
+                        phonenumber: result.data.userInfo.phonenumber,
+                        fullname: result.data.userInfo.fullname,
+                        address: result.data.userInfo.address,
+                        avatar: result.data.userInfo.avatar,
+                        street_id: result.data.userInfo.street_id,
+                        ward_id: result.data.userInfo.ward_id,
+                        ward_name: result.data.userInfo.ward_name,
+                        district_name: result.data.userInfo.district_name,
+                        province_name: result.data.userInfo.province_name,
+                        role_id: result.data.userInfo.role_id,
+                        createdAt: result.data.userInfo.createdAt,
+                        updatedAt: result.data.userInfo.updatedAt
                     };
                     dispatch(storeUserInfo(userData));
                     navigation.navigate(ScreenName.PROFILE)
@@ -178,6 +184,19 @@ const LogIn = ({ navigation }: any) => {
             }
         }
     };
+
+    const handleLogOut = async () => {
+        dispatch(storeUserInfo({
+            id: "",
+            phonenumber: "",
+            fullname: "",
+            avatar: "",
+            street_id: "",
+            ward_id: "",
+            role_id: ""
+        }))
+        navigation.navigate(ScreenName.HOME)
+    }
 
     return (
         <ImageBackground source={House} resizeMode="cover" style={styles.container}>

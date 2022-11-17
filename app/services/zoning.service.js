@@ -108,6 +108,48 @@ class Zoning {
             console.log("one image zoning by zoning id:", JSON.stringify(err));
         }
     }
+    handleGetZoningByID = async (zoning_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_ZONING_BY_ID, {
+                zoning_id: zoning_id
+            });
+            return result;
+        } catch (err) {
+            console.log("GetZoningByID:", JSON.stringify(err));
+        }
+    }
+
+    handleGetImagesByID = async (zoning_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_ALL_IMAGE_BY_ZONING_ID, {
+                zoning_id: zoning_id
+            });
+            return result;
+        } catch (err) {
+            console.log("GetZoningByID:", JSON.stringify(err));
+        }
+    }
+
+    handleGetZoningByUserID = async (user_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_ALL_ZONING_BY_USER_ID, {
+                user_id: user_id
+            });
+            return result;
+        } catch (err) {
+            console.log("GetZoningByUserID:", JSON.stringify(err));
+        }
+    }
+    handleDeleteZoning = async (zoning_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.DELETE_ZONING, {
+                zoning_id: zoning_id
+            });
+            return result;
+        } catch (err) {
+            console.log("handleDeleteZoning :", JSON.stringify(err));
+        }
+    }
 }
 
 export default Zoning;

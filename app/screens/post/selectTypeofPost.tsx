@@ -1,5 +1,5 @@
 //import
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./style"
 import Strings from "@app/commons/strings";
 import ScreenName from "@app/navigation/screenName";
@@ -15,15 +15,31 @@ import { useDispatch, useSelector } from "react-redux";
 import Constants from "@app/constants";
 
 //function
-import PostService from "@app/services/post.service";
-const postService = new PostService();
+import postService from "@app/services/post.service";
+import { post } from "@app/services/apiProcessor";
+const PostService = new postService();
 
-const MainPost = ({ route, navigation }: any) => {
+const SelectTypeofPost = ({ route, navigation }: any) => {
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(true);
+
     const { userInfo } = useSelector(
         (state: RootState) => state.user
     );
+    const [typePostData, setTypePostData] = React.useState([]);
+    const handleGetTypePostList = async () => {
+        try {
+            const result = await PostService.handleGetTypeofPost();
+            setTypePostData(result.data);
+            setIsLoading(false);
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
+    useEffect(() => {
+        handleGetTypePostList();
+    })
     if (!userInfo.id) {
         return (
             <View style={{ flex: 1 }}>
@@ -45,36 +61,26 @@ const MainPost = ({ route, navigation }: any) => {
             <View style={{ flex: 1 }}>
                 <HeaderComp title={Strings.Post.TITLE} height={17} />
                 <View style={{ flex: 1, justifyContent: "center" }}>
-                    <View>
+                    {typePostData.length > 0 && typePostData.map((type: any, ind: any) => (
                         <Button
+                            key={type.id}
                             activeOpacity={0.6}
                             buttonStyle={styles.btn_step1_container}
                             onPress={() => {
-                                navigation.navigate(ScreenName.SELECTTYPEPOST)
+                                navigation.navigate(ScreenName.ADDPOST, {
+                                    typeof_post: type.id
+                                })
                             }}
                         >
                             <View>
-                                <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="receipt-outline" color={Constants.Styles.COLOR_CHETWODE_BLUE} size={30} />
-                                <Text style={styles.text_step1_title} >Tạo bài đăng mới</Text>
+                                <Text style={styles.text_step1_title} >{type.name}</Text>
                             </View>
                         </Button>
-                        <Button
-                            activeOpacity={0.6}
-                            buttonStyle={styles.btn_step1_container}
-                            onPress={() => {
-                                navigation.navigate(ScreenName.ADDZONING)
-                            }}
-                        >
-                            <View>
-                                <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="layers-outline" color={Constants.Styles.COLOR_CHETWODE_BLUE} size={30} />
-                                <Text style={styles.text_step1_title} >Tạo quy hoạch mới</Text>
-                            </View>
-                        </Button>
-                    </View>
+                    ))}
                 </View >
             </View >
         )
 }
 
-export default MainPost;
+export default SelectTypeofPost;
 

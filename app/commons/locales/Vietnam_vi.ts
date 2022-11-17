@@ -1,7 +1,10 @@
 export default {
     Common: {
         APP_NAME: "REIPA",
-        CONFIRM: "Xác nhận"
+        CONFIRM: "Xác nhận",
+        UPDATE: "Chỉnh sửa",
+        DELETE: "Xóa",
+        CANCEL: "Hủy",
     },
 
     System: {
@@ -29,7 +32,7 @@ export default {
         WARD_REQUIRED_MESSAGE: "Vui lòng nhập Phường/Xã",
         PROVINCE_REQUIRED_MESSAGE: "Vui lòng nhập Tỉnh/Thành phố",
         DISTRICT_REQUIRED_MESSAGE: "Vui lòng nhập Quận/Huyện",
-
+        APOLOGY_MESSAGE: "Ứng dụng hiện tại chưa có dữ liệu bên ngoài thành phố Cần Thơ. Vui lòng chọn trong khu vực thành phố Cần Thơ. Xin lỗi vì sự bất tiện này"
     },
 
     Auth: {
@@ -57,12 +60,34 @@ export default {
 
     Post: {
         TITLE: "Bài đăng",
-        DETAIL: "Chi tiết"
+        ADD_POST: "Tạo bài đăng mới",
+        LIST_POST: "Danh sách bài đăng",
+        NAME: "Tiêu đề",
+        PRICE: "Mức giá(triệu/m2)",
+        ADDRESS: "Địa chí",
+        AREA: "Diện tích",
+        JURIDICAL: "Pháp lý",
+        FURNITURE: "Nội thất",
+        STRUCTURE: "Vị trí tầng",
+        BEDROOM: "Số phòng ngủ",
+        TOILET: "Số phòng vệ sinh",
+        LOCATION: "Vị trí",
+        DESCRIPTION: "Mô tả",
+        TYPEOF_REAL_ESTATE: "Loại bất động sản",
+        TYPEOF_POST: "Loại bài đăng",
+        NULL_POST_MESSAGE: "Chưa có bài đăng bất động sản nào trong khu vực này",
+        SELECT_FURNITURE: "Chọn nội thất",
+        SELECT_STREET: "Chọn đường",
+        TYPEOFPOST_REQUIRE_MESSAGE: "Vui lòng chọn loại bài đăng",
+        PRICE_REQUIRE_MESSAGE: "Vui lòng nhập mức giá",
+        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích",
+
     },
 
     Zoning: {
         TITLE: "Quy hoạch",
         ADD_ZONING: "Tạo quy hoạch mới",
+        LIST_ZONING: "Danh sách quy hoạch",
         NAME: "Tên quy hoạch",
         ADDRESS: "Địa chỉ",
         PURPOSE: "Mục đích",
@@ -75,17 +100,23 @@ export default {
         TYPEOFZONING: "Loại quy hoạch",
         DEFINE_LOCATION: "Xác định quy hoạch trên bản đồ",
         BUTTON_DEFINE_LOCATION: "Nhấn vào đây để xác định tọa độ trên bản đồ",
-        NAME_REQUIRE_MESSAGE: "Vui lòng nhập tên quy hoạch",
+        NAME_REQUIRE_MESSAGE: "Vui lòng nhập tên",
         PURPOSE_REQUIRE_MESSAGE: "Vui lòng nhập chức năng quy hoạch",
         DATA_IMAGE_REQUIRE_MESSAGE: "Vui lòng chọn hình ảnh",
-        PROVINCE_REQUIRE_MESSAGE: "Vui lòng nhập tỉnh/thành phố của quy hoạch",
-        DISTRICT_REQUIRE_MESSAGE: "Vui lòng nhập quận/huyện của quy hoạch",
-        WARD_REQUIRE_MESSAGE: "Vui lòng nhập phường/xã của quy hoạch",
-        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích quy hoạch",
-        LOCATION_REQUIRE_MESSAGE: "Vui lòng chọn tọa độ quy hoạch",
-        ADDRESS_REQUIRE_MESSAGE: "Vui lòng nhập địa chỉ quy hoạch",
+        PROVINCE_REQUIRE_MESSAGE: "Vui lòng nhập tỉnh/thành phố",
+        DISTRICT_REQUIRE_MESSAGE: "Vui lòng nhập quận/huyện",
+        WARD_REQUIRE_MESSAGE: "Vui lòng nhập phường/xã",
+        AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích ",
+        LOCATION_REQUIRE_MESSAGE: "Vui lòng chọn tọa độ ",
+        ADDRESS_REQUIRE_MESSAGE: "Vui lòng nhập địa chỉ",
         WARNING_MAX_IMAGE: "Vui lòng chọn không quá 10 ảnh",
-        ADD_SUCCESS_MESSAGE: "Thêm quy hoạch thành công"
+        ADD_SUCCESS_MESSAGE: "Thêm quy hoạch thành công",
+        REQUIRE_SAVE_PREVIOUS_ZONING: "Vui lòng xóa quy hoạch đã chọn trước. Trước khi thêm quy hoạch khác !!!",
+        REQUIRE_SAVE_PREVIOUS_ZONING_DRAW: "Chỉ được tạo một đối tượng. Vui lòng sửa hoặc xóa đối tượng đã tạo trước đó !!!",
+        REQUIRE_INSIDE_BORDER: "Vui lòng chọn trong ranh giới",
+        INPUT_WIDTH_LINE: "Nhập độ rộng của đường (đơn vị: m2)",
+        CONFIRM_DELETE: "Chắc chắn xóa ???",
+        DELETE: "Chắc chắn xóa ???",
     },
 
     Typeof_zoning: {

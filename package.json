@@ -29,6 +29,7 @@
     "react-native": "0.69.3",
     "react-native-dropdown-select-list": "^1.0.23",
     "react-native-image-crop-picker": "^0.38.1",
+    "react-native-image-slider-banner": "^1.0.3",
     "react-native-localization": "^2.3.1",
     "react-native-paper": "^4.12.4",
     "react-native-permissions": "^3.6.1",

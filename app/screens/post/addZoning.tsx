@@ -38,7 +38,7 @@ const districtService = new DistrictService();
 const wardService = new WardService();
 
 const AddZoning = ({ navigation }: any) => {
-
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [countText, setCountText] = useState();
     const [visible1, setVisible1] = useState(false);
@@ -70,9 +70,9 @@ const AddZoning = ({ navigation }: any) => {
 
     const [Zoning, setZoning] = React.useState<IDataZoning>({
         user_id: userInfo.id || "",
-        name: "Đường cao tốc Ninh Kiều - Ô Môn",
+        name: "Kế hoạch quy hoạch bờ kè hẻm 51 2023-2024",
         purpose: "Đất giao thông",
-        address: "Cần Thơ",
+        address: "hẻm 51, Cần Thơ",
         dataImage: [],
         area: 0.0000,
         width: 0.0000,
@@ -144,33 +144,8 @@ const AddZoning = ({ navigation }: any) => {
         }
     }
 
-    //lấy ranh giới xã
     const [polygonBorder, setPolygonBorder] = React.useState();
     const [geojsonBorder, setGeoJSONBorder] = React.useState();
-    const handleBorderWard = async (ward_id: any) => {
-        try {
-            var result = await wardService.handleGetBorderWard(ward_id);
-            if (result.data && result.data[0].json_build_object) {
-                setPolygonBorder(result.data[0].json_build_object.features[0].geometry.coordinates[0]);
-                setGeoJSONBorder(result.data[0].json_build_object);
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    //lấy ranh giới huyện
-    const handleBorderDistrict = async (district_id: any) => {
-        try {
-            var result = await districtService.handleGetBorderDistrict(district_id);
-            if (result.data && result.data[0].json_build_object) {
-                setPolygonBorder(result.data[0].json_build_object.features[0].geometry.coordinates[0]);
-                setGeoJSONBorder(result.data[0].json_build_object);
-            }
-        } catch (err) {
-            console.log(err);
-        }
-    }
     //lấy ranh giới tỉnh
     const handleBorderProvince = async (province_id: any) => {
         try {
@@ -183,12 +158,31 @@ const AddZoning = ({ navigation }: any) => {
             console.log(err);
         }
     }
+    //lấy ranh giới huyện
+    const handleBorderDistrict = async (district_id: any) => {
+        try {
+            var result = await districtService.handleGetBorderDistrict(district_id);
+            if (result.data && result.data[0].json_build_object) {
+                setPolygonBorder(result.data[0].json_build_object.features[0].geometry.coordinates[0]);
+                setGeoJSONBorder(result.data[0].json_build_object);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    //lấy ranh giới xã
+    const handleBorderWard = async (ward_id: any) => {
+        try {
+            var result = await wardService.handleGetBorderWard(ward_id);
+            if (result.data && result.data[0].json_build_object) {
+                setPolygonBorder(result.data[0].json_build_object.features[0].geometry.coordinates[0]);
+                setGeoJSONBorder(result.data[0].json_build_object);
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
-    useEffect(() => {
-        handleGetTypeZoningList();
-        handleGetLocation();
-        handleGetProvinceList();
-    }, []);
 
     const handleClickProvince = (selected: any) => {
         if (selected == 0) {
@@ -201,6 +195,7 @@ const AddZoning = ({ navigation }: any) => {
             handleGetDistrict(selected);
             handleBorderProvince(JSON.stringify(selected));
         }
+        updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
     }
 
     const handleClickDistrict = (selected: any) => {
@@ -213,18 +208,26 @@ const AddZoning = ({ navigation }: any) => {
             handleGetWard(Zoning.province_id, selected);
             handleBorderDistrict(JSON.stringify(selected));
         }
+        updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
     }
 
     const handleClickWard = (selected: any) => {
         if (selected == 0) {
             updateZoningInfo({ ward_id: "" });
-            handleBorderProvince(Zoning.district_id);
+            handleBorderDistrict(Zoning.district_id);
         } else {
             updateZoningInfo({ ward_id: selected });
-            updateZoningInfo({ coordinates: "", area: 0 });
             handleBorderWard(JSON.stringify(selected));
         }
+        updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
     }
+
+    useEffect(() => {
+        handleGetTypeZoningList();
+        handleGetLocation();
+        handleGetProvinceList();
+    }, []);
+
     const isNull = (val: any) => {
         if (val === null || val === undefined || val === "")
             return true;
@@ -797,7 +800,6 @@ const AddZoning = ({ navigation }: any) => {
         if(geojsonDataRN){
             k++;
             if(isPolygon){
-                alert(1);
                 type="polygon";
                 var geoJsonGroup = L.geoJSON(${JSON.stringify(Zoning.coordinates)});
                 addNonGroupLayers(geoJsonGroup, drawnItems);  
@@ -813,16 +815,18 @@ const AddZoning = ({ navigation }: any) => {
                     corridor: widthInMeters, // meters
                     className: 'route-corridor' 
                 };
-                var corridor = L.corridor([arrLatlngGeoPolyline], options).addTo(drawnItems);
+                var corridor = L.corridor([arrLatlngGeoPolyline], options);
+                mymap.fitBounds(corridor.getBounds());
+                corridor.addTo(drawnItems);
             }
         }        
         //..................................>> Xử lý sau khi UPLOAD FILE <<..................................
         var geojsonUpload;
         (function(){
             function onChange(event) {
-                if(k>=2) alert('Chỉ được tạo một đối tượng. Vui lòng lưu đối tượng đã tạo trước đó !!!')
+                if(k>=2) alert('${Strings.Zoning.REQUIRE_SAVE_PREVIOUS_ZONING_DRAW}')
                 else if(geojsonDataRN){
-                    alert("Vui lòng xóa quy hoạch đã chọn trước. Trước khi thêm quy hoạch khác !!!")
+                    alert('${Strings.Zoning.REQUIRE_SAVE_PREVIOUS_ZONING}')
                 }else{
                     var reader = new FileReader();
                     reader.onload = onReaderLoad;
@@ -845,16 +849,15 @@ const AddZoning = ({ navigation }: any) => {
                     }
                 }
                 if(flatInside){
-                    if(drawControl){
-                        mymap.removeControl(drawControl);
-                    }
                     k++;
                     if(type=="MultiLineString"|| type=="Polyline"){
                         var latlng =[];
                         for(var i = 0 ; i < geojsonUpload.length; i++){
                             latlng.push(L.latLng([geojsonUpload[i][1],geojsonUpload[i][0]]));
                         }
-                        widthInMeters = parseFloat(prompt("Nhập độ rộng của đường (đơn vị: m2)"),2); 
+                        while(!widthInMeters){
+                            widthInMeters = parseFloat(prompt("${Strings.Zoning.INPUT_WIDTH_LINE}"),2); 
+                        }
                         var coords = [latlng];               
                         var options = { 
                             corridor: widthInMeters, // meters
@@ -870,7 +873,7 @@ const AddZoning = ({ navigation }: any) => {
                         seeArea = area;
                     }                    
                 }else{
-                    alert("Vui lòng chọn quy hoạch trong ranh giới")
+                    alert("${Strings.Zoning.REQUIRE_INSIDE_BORDER}")
                 }
             }
             document.getElementById('file').addEventListener('change', onChange);
@@ -878,7 +881,7 @@ const AddZoning = ({ navigation }: any) => {
 
         //..................................>> Xử lý khi VẼ xong <<..................................
         function showText(e) {
-                if(k>=2) alert('Chỉ được tạo một đối tượng. Vui lòng lưu đối tượng đã tạo trước đó !!!');	
+                if(k>=2) alert("${Strings.Zoning.REQUIRE_SAVE_PREVIOUS_ZONING_DRAW}");	
                 else{
                     let flatInside=true;
                     var layer = e.layer;
@@ -898,18 +901,21 @@ const AddZoning = ({ navigation }: any) => {
                     }
                     
                     if(!flatInside){
-                        alert("Vui lòng chọn trong ranh giới");
+                        alert("${Strings.Zoning.REQUIRE_INSIDE_BORDER}");
                     }else{
                         k++;
                         if(type == "polyline"){
-                            widthInMeters = parseFloat(prompt("Nhập độ rộng của đường (đơn vị: m2)"),2); 
+                            while(!widthInMeters){
+                                widthInMeters = parseFloat(prompt("${Strings.Zoning.INPUT_WIDTH_LINE}"),2); 
+                            }
                             var coords = [layer.getLatLngs()];                    
-                            var options = { 
-                                corridor: widthInMeters, // meters
-                                className: 'route-corridor' 
-                            };
-                            var corridor = L.corridor(coords, options);
-                            corridor.addTo(drawnItems);
+                                var options = { 
+                                    corridor: widthInMeters, // meters
+                                    className: 'route-corridor' 
+                                };
+                                var corridor = L.corridor(coords, options);
+                                mymap.fitBounds(corridor.getBounds());
+                                corridor.addTo(drawnItems);
                         }else{
                             layer.addTo(drawnItems);
                         }
@@ -930,7 +936,7 @@ const AddZoning = ({ navigation }: any) => {
                 }                             	
             });
             if(!flatInside){
-                alert("Vui lòng chọn trong ranh giới quận");
+                alert("${Strings.Zoning.REQUIRE_INSIDE_BORDER}");
                 drawControl._toolbars["edit"].disable();
             }else{
                 layers.eachLayer(function(layer) {                                                          
@@ -943,6 +949,7 @@ const AddZoning = ({ navigation }: any) => {
         //..................................>> Xử lý khi XÓA xong <<..................................
         function delText(e) {
             var layers = e.layers;		
+            widthInMeters=0;
             layers.eachLayer(function (layer) {
                 drawnItems.removeLayer(layer);
                 k--;
@@ -956,7 +963,7 @@ const AddZoning = ({ navigation }: any) => {
             var collection = drawnItems.toGeoJSON();
             var countLayers = collection.features.length;
             if(countLayers==0){
-                alert("Vui lòng xác nhận tọa độ trên bản đồ !!!")
+                alert("${Strings.Zoning.LOCATION_REQUIRE_MESSAGE}")
             }else{
                 let ob;
                 if(type=="MultiLineString"|| type=="polyline"){

@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import themeReducer, { changeTheme } from "./slice/theme.slice";
 import roleReducer from "./slice/role.slice";
 import userReducer from "./slice/user.slice";
+import postReducer from "./slice/post.slice";
 
 export const store = configureStore({
   reducer: {
     theme: themeReducer,
     role: roleReducer,
-    user: userReducer
+    user: userReducer,
+    post: postReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

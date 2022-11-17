@@ -32,6 +32,15 @@ const styles = StyleSheet.create({
         borderWidth: 2,
 
     },
+    btn_step1_container_delete: {
+        margin: 10,
+        borderRadius: 10,
+        shadowOpacity: 0.7,
+        backgroundColor: Constants.Styles.CORLOR_WHITE,
+        borderColor: Constants.Styles.COLOR_DARKGRAY,
+        borderWidth: 2,
+
+    },
     text_step1_title: {
         color: Constants.Styles.COLOR_BLACK,
         fontSize: 17
@@ -41,6 +50,56 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         fontSize: 12,
     },
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginHorizontal: 20,
+        color: "black",
+    },
+    title_box: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    container_info: {
+        paddingTop: 10,
+        flexWrap: 'wrap',
+        flexDirection: "row"
+    },
+    text_info_content: {
+        fontSize: 17,
+        color: Constants.Styles.COLOR_BLACK,
+        fontWeight: "bold",
+        paddingVertical: 10
+    },
+    text_info: {
+        fontSize: 15,
+    },
+    text_info_money: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "black"
+    },
+    box_info: {
+        flexWrap: 'wrap',
+        flexDirection: "row",
+        width: "100%",
+        marginTop: 25,
+    },
+    box_info_item: {
+        flexWrap: 'wrap',
+        flexDirection: "row",
+        width: "33.3%",
+        padding: 10,
+        borderColor: Constants.Styles.COLOR_ATHENSGRAY,
+        borderWidth: 1.5,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    text_description: {
+        padding: 10
+    }
 })
 
 export default styles

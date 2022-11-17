@@ -1,34 +1,59 @@
-import React, { useEffect, useState } from "react"
-import styles from "./style"
-import { View, Button } from "react-native"
-import HeaderComp from "@app/components/HeaderComp";
-import ScreenName from "@app/navigation/screenName";
-import { useDispatch, useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from 'react';
+import Constants from '@app/constants';
 import { RootState } from "@app/store";
-
-//interface
-import { IUserInfo } from "../../commons/interfaces";
-
-import {
-    storeUserInfo
-} from "../../store/slice/user.slice";
+import { IUserInfo, IErrorUserInfo } from "@app/commons/interfaces";
+import { View, StyleSheet, } from 'react-native';
+import { useDispatch, useSelector } from "react-redux";
+import ScreenName from "@app/navigation/screenName";
+import { storeUserInfo } from "../../store/slice/user.slice";
+import { Button, Text, Avatar, ListItem, Icon } from "@rneui/themed";
 
 const Profile = ({ navigation }: any) => {
     const dispatch = useDispatch();
-
     const { userInfo } = useSelector(
         (state: RootState) => state.user
     );
-    const [pnStorage, setPnStorage] = useState();
-    const [pwStorage, setPwStorage] = useState();
-    AsyncStorage.getItem("phonenumber").then((val: any) => {
-        setPnStorage(val);
-    })
 
-    AsyncStorage.getItem("password").then((val: any) => {
-        setPwStorage(val);
-    })
+    const list = [
+        {
+            title: 'Bài đăng của tôi',
+            icon: 'receipt',
+            function: () => goToPostList(),
+        },
+        {
+            title: 'Quy hoạch của tôi',
+            icon: 'layers',
+            function: () => goToZoningList(),
+        },
+        {
+            title: 'Cập nhật hồ sơ',
+            icon: 'person',
+            function: () => handleLogOut,
+        },
+        {
+            title: 'Đăng xuất',
+            icon: 'log-out',
+            function: async () => handleLogOut()
+        },
+    ]
+
+    const listInfo = [
+        {
+            title: 'Số điện thoại',
+            icon: 'call-outline',
+            value: userInfo.phonenumber
+        },
+        {
+            title: 'Địa chỉ',
+            icon: 'location-outline',
+            value: `${userInfo.ward_name ? userInfo.ward_name : ""}, ${userInfo.district_name ? userInfo.district_name : ""}, ${userInfo.province_name ? userInfo.province_name : ""}`
+        },
+        {
+            title: 'Ngày tham gia',
+            icon: 'calendar-outline',
+            value: convertDate(userInfo.createdAt),
+        },
+    ]
 
     const handleLogOut = async () => {
         dispatch(storeUserInfo({
@@ -43,13 +68,61 @@ const Profile = ({ navigation }: any) => {
         navigation.navigate(ScreenName.HOME)
     }
 
+    function convertDate(str: any) {
+        const dateStr = str, [yyyy, mm, dd, mi, hh] = dateStr.split(/[/:\-T]/)
+        return `${dd}/${mm}/${yyyy}`
+    }
+    function goToPostList() {
+        navigation.navigate(ScreenName.POSTLIST)
+    }
+    function goToZoningList() {
+        navigation.navigate(ScreenName.ZONINGLIST)
+    }
+
     return (
         <View style={styles.container}>
-            <HeaderComp text="Home" height={17} />
-            <Button onPress={handleLogOut} title="Đăng xuất" />
+            <View
+                style={{ alignItems: 'center', marginTop: 40, paddingHorizontal: 20, flexDirection: "row" }}
+            >
+                <Avatar
+                    containerStyle={{
+                        width: Constants.Styles.SIZE_AVATAR,
+                        height: Constants.Styles.SIZE_AVATAR,
+                        marginRight: 10
+                    }}
+                    source={{ uri: `${userInfo.avatar ? userInfo.avatar : Constants.Api.IMAGES_URL + "/user.png"}` }}
+                />
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{userInfo.fullname}</Text>
+            </View>
+            <View style={{ paddingVertical: 30, paddingHorizontal: 10 }}>
+                {
+                    listInfo.map((item, i) => (
+                        <ListItem key={i} containerStyle={{ padding: 0 }}>
+                            <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} size={20} />
+                            <ListItem.Title><Text style={{ fontWeight: "bold" }}>{item.title}:</Text> {item.value}</ListItem.Title>
+                        </ListItem>
+                    ))
+                }
+            </View>
+            {
+                list.map((item, i) => (
+                    <Button key={i} onPress={item.function} type={"clear"} containerStyle={{ borderBottomWidth: 1.5, borderBottomColor: Constants.Styles.COLOR_ATHENSGRAY }}>
+                        <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} color={Constants.Styles.COLOR_CHETWODE_BLUE} />
+                        <ListItem.Content>
+                            <ListItem.Title>   {item.title}</ListItem.Title>
+                        </ListItem.Content>
+                        <ListItem.Chevron />
+                    </Button>
+                ))
+            }
         </View>
-    )
-}
+    );
+};
 
-export default Profile
-
+export default Profile;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Constants.Styles.CORLOR_WHITE,
+    }
+});
