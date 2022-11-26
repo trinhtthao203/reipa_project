@@ -2,6 +2,7 @@ import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
 const DOMAIN = "http://10.1.15.109:8080"; // LIVE
+// const DOMAIN = "http://10.13.129.227:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -49,10 +50,10 @@ const Constants = {
     UPDATE_PASSWORD: "User/ChangePassword",
     GET_ALL_ROLE: "/roles/get-all",
 
-    GET_STREET_SIGN_UP: "/streets/sign-up",
+    GET_STREET_SIGN_UP: "/streets/get-by-province-district-id",
 
     GET_ALL_WARD: "/wards/get-all",
-    GET_WARD_SIGN_UP: "/wards/sign-up",
+    GET_WARD_SIGN_UP: "/wards/get-by-province-district-id",
     GET_GEOJSON_BORDER_WARD_BY_ID: "/wards/geojson-border-ward-by-id",
 
     GET_ALL_PROVINCE: "/provinces/get-all",

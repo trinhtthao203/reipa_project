@@ -75,9 +75,9 @@ const AddPost = ({ route, navigation }: any) => {
 
     const [Post, setPost] = React.useState<IDataPost>({
         user_id: userInfo.id || "",
-        title: "Bán đất nền trung tâm Cần Thơ",
+        title: "Cần mua nhà gần quy hoạch Công viên Enrizer",
         address: "Ninh Kiều, Cần Thơ",
-        description: "Gia đình định cư ở nước ngoài nên muốn bán nền. Giá cả thương lượng.",
+        description: "Nhà có mặt tiền hướng ra công viên, có giấy tờ đầy đủ, giá cả thương lượng",
         area: 76,
         price: 19,
         bedroom: 0,
@@ -222,51 +222,51 @@ const AddPost = ({ route, navigation }: any) => {
         }
     }
 
-    const handleClickProvince = (selected: any) => {
-        if (selected == 0) {
-            updatePostInfo({ province_id: "", district_id: "", ward_id: "" });
+    const handleClickProvince = (province_id: any) => {
+        if (province_id == 0) {
+            updatePostInfo({ province_id: "", district_id: "", ward_id: "", street_id: "" });
             setGeoJSONBorder(undefined);
             setDistrictData([]);
             setWardData([]);
         } else {
-            updatePostInfo({ province_id: selected, district_id: "", ward_id: "" });
-            handleGetDistrict(selected);
-            handleBorderProvince(JSON.stringify(selected));
+            updatePostInfo({ province_id: province_id, district_id: "", ward_id: "", street_id: "" });
+            handleGetDistrict(province_id);
+            handleBorderProvince(JSON.stringify(province_id));
         }
         updatePostInfo({ coordinates: "", area: 0 });
     }
 
-    const handleClickDistrict = (selected: any) => {
-        if (selected == 0) {
-            updatePostInfo({ district_id: "", ward_id: "" });
+    const handleClickDistrict = (province_id: any, district_id: any) => {
+        if (district_id == 0) {
+            updatePostInfo({ district_id: "", ward_id: "", street_id: "" });
             handleBorderProvince(Post.province_id);
             setWardData([]);
         } else {
-            updatePostInfo({ district_id: selected, ward_id: "" });
-            handleGetWard(Post.province_id, selected);
-            handleGetStreet(Post.province_id, selected);
-            handleBorderDistrict(JSON.stringify(selected));
+            updatePostInfo({ district_id: district_id, ward_id: "", street_id: "" });
+            handleGetWard(province_id, district_id);
+            handleGetStreet(province_id, district_id);
+            handleBorderDistrict(JSON.stringify(district_id));
         }
         updatePostInfo({ coordinates: "", area: 0 });
     }
 
-    const handleClickWard = (selected: any) => {
-        if (selected == 0) {
+    const handleClickWard = (ward_id: any) => {
+        if (ward_id == 0) {
             updatePostInfo({ ward_id: "" });
             handleBorderDistrict(Post.district_id);
         } else {
-            updatePostInfo({ ward_id: selected });
-            handleBorderWard(JSON.stringify(selected));
+            updatePostInfo({ ward_id: ward_id });
+            handleBorderWard(JSON.stringify(ward_id));
         }
         updatePostInfo({ coordinates: "", area: 0 });
     }
 
-    const handleClickStreet = (selected: any) => {
-        if (selected == 0) {
+    const handleClickStreet = (street_id: any) => {
+        if (street_id == 0) {
             updatePostInfo({ street_id: "" });
             handleBorderDistrict(Post.district_id);
         } else {
-            updatePostInfo({ street_id: selected });
+            updatePostInfo({ street_id: street_id });
         }
         updatePostInfo({ coordinates: "", area: 0 });
     }
@@ -281,9 +281,9 @@ const AddPost = ({ route, navigation }: any) => {
             updatePostInfo({
                 province_id: addressStoreInfo.province_id, district_id: addressStoreInfo.district_id, ward_id: addressStoreInfo.ward_id
             });
-            handleGetDistrict(addressStoreInfo.province_id);
-            handleGetWard(addressStoreInfo.province_id, addressStoreInfo.district_id);
-            handleGetStreet(addressStoreInfo.province_id, addressStoreInfo.district_id);
+            handleClickProvince(addressStoreInfo.province_id);
+            handleClickDistrict(addressStoreInfo.province_id, addressStoreInfo.district_id);
+            handleClickWard(addressStoreInfo.ward_id);
             handleBorderWard(JSON.stringify(addressStoreInfo.ward_id));
         }
         handleRemoveAddressStore();
@@ -589,7 +589,7 @@ const AddPost = ({ route, navigation }: any) => {
                         <Picker
                             selectedValue={Post.district_id}
                             onValueChange={(itemValue, itemIndex) =>
-                                handleClickDistrict(itemValue)
+                                handleClickDistrict(Post.province_id, itemValue)
                             }
                         >
                             <Picker.Item label={Strings.Zoning.DISTRICT} value={0} />

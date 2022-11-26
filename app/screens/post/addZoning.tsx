@@ -70,13 +70,14 @@ const AddZoning = ({ navigation }: any) => {
 
     const [Zoning, setZoning] = React.useState<IDataZoning>({
         user_id: userInfo.id || "",
-        name: "Kế hoạch quy hoạch bờ kè hẻm 51 2023-2024",
+        name: "Đường cao tốc Ninh Kiều - Ô Môn",
         purpose: "Đất giao thông",
-        address: "hẻm 51, Cần Thơ",
+        address: "Ninh Kiều - Ô Môn",
         dataImage: [],
         area: 0.0000,
         width: 0.0000,
-        length: 0.0000
+        length: 0.0000,
+        description: ""
     });
 
     const updateZoningInfo = (newState: IDataZoning) => {

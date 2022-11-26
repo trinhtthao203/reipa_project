@@ -16,8 +16,8 @@ import { IDataPost, IDataPostSelect } from "@app/commons/interfaces";
 import Constants from "@app/constants";
 
 //function
-import zoningService from "@app/services/zoning.service";
 import styles from "./style";
+import zoningService from "@app/services/zoning.service";
 const ZoningService = new zoningService();
 
 const PostList = ({ navigation }: any) => {

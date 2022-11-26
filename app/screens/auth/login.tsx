@@ -150,9 +150,9 @@ const LogIn = ({ navigation }: any) => {
                 if (result.code !== 200) {
                     setShowDialog(true);
                     setTypeDialog(Strings.System.WARNING);
-                    setContentDialog(result.data.message);
+                    setContentDialog(result.data.userInfo.message);
                 }
-
+                console.log(result);
                 if (result.data && result.data.accessToken) {
                     if (checked === true) {
                         AsyncStorage.setItem("phonenumber", userInfo.phonenumber || "");
