@@ -73,7 +73,11 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     text_info: {
-        fontSize: 15,
+        fontSize: 16,
+    },
+    text_info_detail: {
+        fontSize: 16,
+        padding: 5
     },
     text_info_money: {
         fontSize: 20,
@@ -87,8 +91,6 @@ const styles = StyleSheet.create({
         marginTop: 25,
     },
     box_info_item: {
-        flexWrap: 'wrap',
-        flexDirection: "row",
         width: "33.3%",
         padding: 10,
         borderColor: Constants.Styles.COLOR_ATHENSGRAY,
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     text_description: {
-        padding: 10
+        padding: 30,
     }
 })
 

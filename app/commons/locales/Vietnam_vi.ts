@@ -2,7 +2,7 @@ export default {
     Common: {
         APP_NAME: "REIPA",
         CONFIRM: "Xác nhận",
-        UPDATE: "Chỉnh sửa",
+        UPDATE: "Cập nhật",
         DELETE: "Xóa",
         CANCEL: "Hủy",
     },

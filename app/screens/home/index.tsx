@@ -169,10 +169,16 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
             console.log(e);
         }
         if (typeof dataPayload == "string") {
-            goPostDetailScreen(dataPayload.substring(7, 5));
+            var stringImage = dataPayload.split("-");
+            console.log(stringImage)
+            showPolygonFromClick(stringImage[0]);
+            updateZoningSelect({
+                lat: stringImage[1],
+                lng: stringImage[2]
+            })
         }
         if (typeof dataPayload == "number") {
-            showPolygonFromClick(dataPayload);
+            goPostDetailScreen(dataPayload);
         }
         if (typeof dataPayload == "object") {
             showPolyLineFromClick(dataPayload);
@@ -248,6 +254,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
         Map_Ref.current.injectJavaScript(`           
             addRoutingControl(${lat1}, ${lng1}, ${lat2}, ${lng2})
         `);
+        setIsVisible(false);
         setIsVisiblePost(false);
         setIsAddRouting(true);
     }
@@ -267,7 +274,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
             } else {
                 var addressTemp = {
                     lat_store: zoningSelect.lat,
-                    lng_strore: zoningSelect.lng,
+                    lng_store: zoningSelect.lng,
                     province_id: result.data.post[0].province_id,
                     district_id: result.data.post[0].district_id,
                     ward_id: result.data.post[0].id,
@@ -291,6 +298,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
         navigation.navigate(ScreenName.POSTDETAIL, {
             post_id: id
         })
+        setIsVisible(false);
         setIsVisiblePost(false);
     }
 
@@ -352,7 +360,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         <ListItem.Title>
                                             <View style={{ width: 270, justifyContent: "center" }}>
                                                 <Text style={{ fontWeight: "bold", fontSize: 13 }}>{post.title}</Text>
-                                                {post.price && <Text style={{ fontSize: 12 }}>🪙~{Math.abs(post.price * post.area / 1000).toFixed()} tỷ</Text>}
+                                                {post.price && <Text style={{ fontSize: 12 }}>🪙~{Math.abs(post.price * post.area / 1000).toFixed(2)} tỷ</Text>}
                                                 {post.address && <Text style={{ fontSize: 12 }}>📍{post.address}</Text>}
                                                 <View style={{ flexDirection: "row" }}>
                                                     <Button title={"Xem chi tiết"} type="clear" titleStyle={{ color: Constants.Styles.COLOR_CHETWODE_BLUE, fontSize: 15 }} onPress={() => goPostDetailScreen(post.id)} />
@@ -525,7 +533,6 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 };
 
                                 var markerOnMap = L.marker([${lat}, ${lng}], {icon:redIcon}).addTo(mymap); 
-                                
                                 var id;
                                 mymap.on('click', function (e) {
                                     if (markerOnMap !== null) {
@@ -542,7 +549,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     geoPolygon.features.forEach((feature) => {
                                         if(isMarkerInsidePolygon(marker,feature.geometry.coordinates[0]) || isMarkerInsidePolygon(marker,feature.geometry.coordinates[0][0])){
                                             id = feature.properties.id;
-                                            sendZoningID(id);   
+                                            sendZoningID(id+"-"+marker.getLatLng().lng+"-"+ marker.getLatLng().lat);   
                                             isNotFind=false;                       
                                         }
                                     })
@@ -571,7 +578,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     return L.circleMarker(latlng, geojsonMarkerOptions);
                                 }}).addTo(mymap)          
                                 
-                                //................................>> Show Polyline <<.........................
+                                //................................>> Show Popup Point <<.........................
                                 var geoPointLayer = L.geoJSON(geoPoint,{
                                     onEachFeature:onEachFeaturePoint
                                 }).addTo(mymap);
@@ -584,7 +591,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         );
                                       }
                                 }
-                                //....................................>>Show Point<<.................
+                                //....................................>>Show Polyline<<.................
 
                                 var geoPolylineLayer = L.geoJSON(geoPolyline,{
                                     onEachFeature:onEachFeaturePolyline
@@ -616,7 +623,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 }
 
                                 function handleDetail(id){
-                                    window.ReactNativeWebView.postMessage(JSON.stringify("name "+id));
+                                    window.ReactNativeWebView.postMessage(JSON.stringify(id));
                                 }
                                 const sendLatLng = (latlng) => {
                                     window.ReactNativeWebView.postMessage(JSON.stringify(latlng));

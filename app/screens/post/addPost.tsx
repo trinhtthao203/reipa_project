@@ -43,7 +43,7 @@ const AddPost = ({ route, navigation }: any) => {
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [visible1, setVisible1] = useState(false);
-    const { typeof_post } = route.params;
+    const [typeof_post, setTypeof_post] = useState();
     const toggleDialog1 = () => {
         if (geojsonBorder) {
             setVisible1(!visible1);
@@ -75,15 +75,18 @@ const AddPost = ({ route, navigation }: any) => {
 
     const [Post, setPost] = React.useState<IDataPost>({
         user_id: userInfo.id || "",
-        title: "Cần mua nhà gần quy hoạch Công viên Enrizer",
-        address: "Ninh Kiều, Cần Thơ",
+        title: "Nhà trệt 2 lầu và lửng",
+        address: "Đường Số 3, Phường An Khánh, Quận Ninh Kiều, Cần Thơ",
         description: "Nhà có mặt tiền hướng ra công viên, có giấy tờ đầy đủ, giá cả thương lượng",
-        area: 76,
-        price: 19,
-        bedroom: 0,
-        toilet: 0,
+        area: 99.4,
+        price: 155.94,
+        bedroom: 3,
+        toilet: 3,
         structure: 0,
         typeof_posts_id: typeof_post,
+        typeof_real_estate_id: "10",
+        furniture_id: "2",
+        juridical_id: "4",
     });
 
     const updatePostInfo = (newState: IDataPost) => {
@@ -239,7 +242,7 @@ const AddPost = ({ route, navigation }: any) => {
     const handleClickDistrict = (province_id: any, district_id: any) => {
         if (district_id == 0) {
             updatePostInfo({ district_id: "", ward_id: "", street_id: "" });
-            handleBorderProvince(Post.province_id);
+            handleBorderProvince(province_id);
             setWardData([]);
         } else {
             updatePostInfo({ district_id: district_id, ward_id: "", street_id: "" });
@@ -271,23 +274,84 @@ const AddPost = ({ route, navigation }: any) => {
         updatePostInfo({ coordinates: "", area: 0 });
     }
 
+    const handleGetData = async (post_id: any) => {
+        try {
+            const result = await PostService.getGeoJSON(post_id);
+            const data = result.data[0].json_build_object.features[0];
+            updatePostInfo({
+                id: data.properties.id,
+                title: data.properties.title,
+                price: data.properties.price,
+                address: data.properties.address,
+                area: data.properties.area,
+                juridical_id: data.properties.juridical_id,
+                furniture_id: data.properties.furniture_id,
+                structure: data.properties.structure,
+                bedroom: data.properties.bedroom,
+                toilet: data.properties.toilet,
+                street_id: data.properties.street_id,
+                description: data.properties.description,
+                typeof_real_estate_id: data.properties.typeof_real_estate_id,
+                typeof_posts_id: data.properties.typeof_posts_id,
+            });
+            updateInfoAddress(data.properties.province_id, data.properties.district_id, data.properties.ward_id);
+            updatePostInfo({ coordinates: data.geometry })
+            handleChangeArea(data.properties.area);
+            const resultImage = await PostService.getImages(data.properties.id);
+            var arrImage = resultImage.data.map((image: any, ind: any) => {
+                return `${Constants.Api.IMAGES_URL}/${image.name}`
+            })
+            setImageList(arrImage);
+            setTypeof_post(data.properties.typeof_posts_id);
+            setIsLoading(false);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const updateInfoAddress = (province_id: any, district_id: any, ward_id: any) => {
+        if (province_id) {
+            handleClickProvince(province_id);
+        }
+        if (district_id) {
+            handleClickDistrict(province_id, district_id);
+        }
+        if (ward_id) {
+            handleClickWard(ward_id);
+            handleBorderWard(ward_id);
+        }
+        updatePostInfo({
+            province_id: province_id, district_id: district_id, ward_id: ward_id
+        });
+    }
+    const handleChangeArea = (area: any) => {
+        updatePostInfo({ area: area })
+    }
+
     useEffect(() => {
+        const { typeof_post } = route.params;
+        if (typeof_post) {
+            setTypeof_post(typeof_post);
+        }
         handleGetTypeRealEstateList();
         handleGetFurnitureDataList();
         handleGetJuridicalData();
-        handleGetLocation();
         handleGetProvinceList();
-        if (addressStoreInfo.lng_store !== "") {
-            updatePostInfo({
-                province_id: addressStoreInfo.province_id, district_id: addressStoreInfo.district_id, ward_id: addressStoreInfo.ward_id
-            });
-            handleClickProvince(addressStoreInfo.province_id);
-            handleClickDistrict(addressStoreInfo.province_id, addressStoreInfo.district_id);
-            handleClickWard(addressStoreInfo.ward_id);
-            handleBorderWard(JSON.stringify(addressStoreInfo.ward_id));
+        const { post_id } = route.params;
+        if (post_id) {
+            handleGetData(post_id);
+        }
+        if (addressStoreInfo.lat_store !== undefined) {
+            updateInfoAddress(addressStoreInfo.province_id, addressStoreInfo.district_id, addressStoreInfo.ward_id);
+            setLat(addressStoreInfo.lat_store);
+            setLng(addressStoreInfo.lng_store);
+            let a =
+                updatePostInfo({ coordinates: JSON.stringify({ "coordinates": [addressStoreInfo.lat_store, addressStoreInfo.lng_store], "type": "Point" }) })
+        } else {
+            handleGetLocation();
         }
         handleRemoveAddressStore();
-    }, []);
+    }, [typeof_post]);
 
     const handleRemoveAddressStore = () => {
         dispatch(storeAddressInfo({}));
@@ -311,7 +375,7 @@ const AddPost = ({ route, navigation }: any) => {
         if (typeof dataPayload === "number") {
             updatePostInfo({ area: dataPayload });
         }
-        updatePostInfo({ coordinates: dataPayload.features[0].geometry });
+        updatePostInfo({ coordinates: JSON.stringify(dataPayload.features[0].geometry) });
         toggleDialog1();
     }
 
@@ -348,7 +412,7 @@ const AddPost = ({ route, navigation }: any) => {
         }
     }
 
-    const handleSave = async () => {
+    const checkError = () => {
         let flatTitle, flatP, flatCoor, flatAD, flatI, flatPrice, flatArea = true;
         if (isNull(Post.title)) {
             flatTitle = true;
@@ -398,7 +462,7 @@ const AddPost = ({ route, navigation }: any) => {
             })
         }
 
-        if ((typeof_post == 1 || typeof_post == 3) && !Post.dataImage?.length) {
+        if ((typeof_post == 1 || typeof_post == 3) && !Post.dataImage?.length && !Post.id) {
             flatI = true;
             updateErrorInfo({
                 errorDataImageMsg: Strings.Zoning.DATA_IMAGE_REQUIRE_MESSAGE
@@ -433,7 +497,14 @@ const AddPost = ({ route, navigation }: any) => {
                 errorCoordinatesMsg: ""
             })
         }
-        if (flatPrice == false && flatCoor == false && flatTitle == false && flatP == false && flatAD == false && flatI == false && flatArea == false) {
+        if (flatPrice == false && flatCoor == false && flatTitle == false && flatP == false && flatAD == false && flatI == false && flatArea == false)
+            return true;
+        else
+            return false;
+    }
+
+    const handleSave = async () => {
+        if (checkError()) {
             console.log(Post)
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
@@ -496,6 +567,63 @@ const AddPost = ({ route, navigation }: any) => {
                 });
         }
         handleRemoveAddressStore();
+    }
+    const handleUpdate = async () => {
+        if (checkError()) {
+            console.log(Post);
+            setShowDialog(true);
+            setTypeDialog(Strings.System.LOADNING);
+            setContentDialog(Strings.Message.WAITTING_MESSAGE);
+            const formData = new FormData();
+            formData.append("id", Post.id);
+            formData.append("title", Post.title);
+            formData.append("area", Post.area);
+            formData.append("price", Post.price);
+            formData.append("furniture_id", Post.furniture_id);
+            formData.append("juridical_id", Post.juridical_id);
+            formData.append("bedroom", Post.bedroom);
+            formData.append("toilet", Post.toilet);
+            formData.append("structure", Post.structure);
+            formData.append("address", Post.address);
+            formData.append("coordinates", Post.coordinates ? JSON.stringify(Post.coordinates) : null);
+            formData.append("description", Post.description ? Post.description : " ");
+            formData.append("user_id", Post.user_id);
+            formData.append("province_id", Post.province_id ? Post.province_id : "");
+            formData.append("district_id", Post.district_id ? Post.district_id : "");
+            formData.append("ward_id", Post.ward_id ? Post.ward_id : "");
+            formData.append("street_id", Post.street_id ? Post.street_id : "");
+            formData.append("typeof_posts_id", Post.typeof_posts_id);
+            formData.append("typeof_real_estate_id", Post.typeof_real_estate_id);
+            formData.append("status_id", 1);
+            axios.post(Constants.Api.BASE_URL + Constants.ApiPath.UPDATE_POST, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+                .then(function (res) {
+                    setShowDialog(true);
+                    setTypeDialog(Strings.System.SUCCESS);
+                    setContentDialog(res.data.data.message);
+                    setTimeout(() => {
+                        setShowDialog(false);
+                        setTypeDialog("");
+                        setContentDialog("");
+                        navigation.navigate(ScreenName.POSTLIST)
+                    }, 1500);
+                })
+                .catch(function (error) {
+                    if (error.response.status !== 200) {
+                        console.log(error)
+                        setShowDialog(true);
+                        setTypeDialog(Strings.System.WARNING);
+                        setContentDialog(error.response.data.data.message);
+                    } else {
+                        setShowDialog(true);
+                        setTypeDialog(Strings.System.WARNING);
+                        setContentDialog(error.message);
+                    }
+                });
+        }
     }
 
     if (isLoading) {
@@ -666,14 +794,14 @@ const AddPost = ({ route, navigation }: any) => {
                             keyboardType="numeric"
                             value={Post.area + ""}
                             label={Strings.Zoning.AREA}
-                            onChangeText={(val: any) => { updatePostInfo({ area: val }) }}
+                            onChangeText={(val: any) => { handleChangeArea(val) }}
                         />
                         {errorInfo.errorAreaMsg != null && <Text style={styles.error_info}>{errorInfo.errorAreaMsg}</Text>}
                         <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.price + ""}
-                            label={Strings.Post.PRICE}
+                            label={(Post.typeof_posts_id == "2" || Post.typeof_posts_id == "4") ? "Mức giá" : Strings.Post.PRICE}
                             onChangeText={(val: any) => { updatePostInfo({ price: val }) }}
                         />
                         {errorInfo.errorPriceMsg != null && <Text style={styles.error_info}>{errorInfo.errorPriceMsg}</Text>}
@@ -749,12 +877,18 @@ const AddPost = ({ route, navigation }: any) => {
                                 updatePostInfo({ description: text })
                             }}
                             value={Post.description} />
-                        <Button
+                        {!Post.id ? <Button
                             title={Strings.Common.CONFIRM}
                             buttonStyle={{ backgroundColor: Constants.Styles.COLOR_AMBER, borderRadius: Constants.Styles.BORDER_RADIUS, height: Constants.Styles.TEXT_INPUT_HEIGHT }}
                             titleStyle={{ color: Constants.Styles.COLOR_BLACK, fontSize: Constants.Styles.TEXT_INPUT_FONTSIZE }}
                             onPress={() => { handleSave() }}
-                        />
+                        /> :
+                            <Button
+                                title={Strings.Common.UPDATE}
+                                buttonStyle={{ backgroundColor: Constants.Styles.COLOR_AMBER, borderRadius: Constants.Styles.BORDER_RADIUS, height: Constants.Styles.TEXT_INPUT_HEIGHT }}
+                                titleStyle={{ color: Constants.Styles.COLOR_BLACK, fontSize: Constants.Styles.TEXT_INPUT_FONTSIZE }}
+                                onPress={() => { handleUpdate() }}
+                            />}
                         <DialogCustom
                             show={showDialog}
                             type={typeDialog}
@@ -917,8 +1051,9 @@ const AddPost = ({ route, navigation }: any) => {
         //..................................>> Xử lý khi mở lại thêm bai dang<<..................................
         var geojsonDataRN = ${JSON.stringify(Post.coordinates)};
         if(geojsonDataRN){
-            var geoJsonGroup = L.geoJSON(${JSON.stringify(Post.coordinates)});
-                addNonGroupLayers(geoJsonGroup, drawnItems);  
+            k++;
+            var geoJsonGroup = L.geoJSON([${Post.coordinates}]);
+            addNonGroupLayers(geoJsonGroup, drawnItems);  
         }
 
         //..................................>> Xử lý sau khi UPLOAD FILE <<..................................
@@ -982,7 +1117,6 @@ const AddPost = ({ route, navigation }: any) => {
             let layers = e.layers;
             layers.eachLayer(function(layer) {
                 if(!isMarkerInsidePolygon(L.marker([layer.getLatLng().lat,layer.getLatLng().lng]), ${JSON.stringify(polygonBorder)})){
-                    alert(1);
                     flatInside=false;
                 }
             });

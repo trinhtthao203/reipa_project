@@ -85,6 +85,17 @@ class Zoning {
         }
     }
 
+    handleGetGeoJSONByID = async (id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_ALL_ZONING_GEOJSON_BY_ID, {
+                zoning_id: id,
+            });
+            return result;
+        } catch (err) {
+            console.log("geojson zoning by id:", JSON.stringify(err));
+        }
+    }
+
     handleGetPolylineByLatLngWithDistance = async (lat, lng, status_id) => {
         try {
             const result = apiProcessor.post(Constants.ApiPath.GET_ALL_ZONING_POLYLINE_LATLNG_DISTANCE, {
@@ -144,6 +155,18 @@ class Zoning {
         try {
             const result = apiProcessor.post(Constants.ApiPath.DELETE_ZONING, {
                 zoning_id: zoning_id
+            });
+            return result;
+        } catch (err) {
+            console.log("handleDeleteZoning :", JSON.stringify(err));
+        }
+    }
+    handleUpdateZoning = async (formData) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.UPDATE_ZONING, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
             });
             return result;
         } catch (err) {

@@ -8,7 +8,7 @@ import HeaderComp from '@app/components/HeaderComp'
 //component
 import DialogCustom from "@app/components/Dialog";
 import Loading from "@app/screens/loading";
-import { Button, Dialog, Icon, Card } from "@rneui/themed";
+import { Button, Dialog, Icon, Card, FAB } from "@rneui/themed";
 import { Text, View, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { IDataZoning, IDataZoningList } from "@app/commons/interfaces";
@@ -46,11 +46,13 @@ const ZoningList = ({ navigation }: any) => {
     };
     const handleUpdateZoningList = (e: any) => {
         updateZoning({
-            listDataZoning: [...Array.from(e).map((post: any, ind: any) => (
+            listDataZoning: [...Array.from(e).map((zoning: any, ind: any) => (
                 {
-                    id: post.id,
-                    name: post.name,
-                    description: post.description,
+                    id: zoning.id,
+                    name: zoning.name,
+                    status_id: zoning.status_id,
+                    status_name: zoning.status_name,
+                    description: zoning.description,
                 }
             ))]
         })
@@ -91,11 +93,15 @@ const ZoningList = ({ navigation }: any) => {
         toggleDialog2();
     }
     const goZoningUpdateScreen = async (zoning_id: any) => {
-
+        navigation.navigate(ScreenName.ADDZONING, {
+            zoning_id: zoning_id
+        })
     }
     useEffect(() => {
         getZoningByUserID(userInfo.id);
     }, [])
+
+    const arrColor = [Constants.Styles.CORLOR_BLUE, Constants.Styles.CORLOR_GREEN, Constants.Styles.CORLOR_RED]
 
     if (!userInfo.id) {
         return (
@@ -124,12 +130,20 @@ const ZoningList = ({ navigation }: any) => {
                     <HeaderComp title={Strings.Zoning.LIST_ZONING} height={17} />
                     {zoningList.listDataZoning.length > 0 && zoningList.listDataZoning.map((zoning: any, ind: any) => (
                         <Card key={zoning.id}>
-                            <Card.Title>{zoning.name}</Card.Title>
+                            <Card.Title style={{ fontSize: 18 }}>{zoning.name}</Card.Title>
                             <Card.Divider />
                             <Card.Image
                                 onPress={() => goZoningDetailScreen(zoning.id)}
                                 style={{ padding: 0 }}
                                 source={{ uri: `${Constants.Api.IMAGES_URL}/${arr[zoning.id]}`, }}
+                            />
+                            <FAB
+                                size="small"
+                                visible={true}
+                                title={zoning.status_name}
+                                titleStyle={{ fontSize: 13, fontWeight: "800", color: Constants.Styles.CORLOR_WHITE }}
+                                color={arrColor[zoning.status_id - 1]}
+                                style={{ position: "absolute", top: 35, left: -30 }}
                             />
                             <Text style={{ marginVertical: 15 }}>{zoning.description == "undefined" ? "" : zoning.description}</Text>
                             <View style={{ flexDirection: "row", display: "flex", justifyContent: "center" }}>
@@ -147,6 +161,7 @@ const ZoningList = ({ navigation }: any) => {
                                         marginBottom: 0,
                                     }}
                                     title={Strings.Common.UPDATE}
+                                    onPress={() => goZoningUpdateScreen(zoning.id)}
                                 />
                                 <Button
                                     containerStyle={styles.btn_step1_container_delete}

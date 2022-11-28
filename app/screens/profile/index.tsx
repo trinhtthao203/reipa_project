@@ -86,11 +86,20 @@ const Profile = ({ navigation }: any) => {
             >
                 <Avatar
                     containerStyle={{
+                        shadowColor: '#000',
+                        shadowOffset: { width: -2, height: 4 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 50,
+                        elevation: 10,
+                        borderRadius: 30,
                         width: Constants.Styles.SIZE_AVATAR,
                         height: Constants.Styles.SIZE_AVATAR,
-                        marginRight: 10
+                        marginRight: 10,
                     }}
-                    source={{ uri: `${userInfo.avatar ? userInfo.avatar : Constants.Api.IMAGES_URL + "/user.png"}` }}
+                    avatarStyle={{
+                        borderRadius: 50,
+                    }}
+                    source={{ uri: `${userInfo.avatar ? Constants.Api.IMAGES_URL + "/" + userInfo.avatar : Constants.Api.IMAGES_URL + "/user.png"}` }}
                 />
                 <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{userInfo.fullname}</Text>
             </View>

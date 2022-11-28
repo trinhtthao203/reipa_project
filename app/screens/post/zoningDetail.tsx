@@ -62,24 +62,29 @@ const ZoningDetail = ({ route, navigation }: any) => {
                 </View>
                 <View style={styles.box_info}>
                     <View style={styles.box_info_item}>
-                        <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="map-outline" color={Constants.Styles.COLOR_AMBER} size={25} />
+                        <Icon type={Constants.Styles.ICON_STYLE_FONT_AWESOME} name="arrows-alt" color={Constants.Styles.COLOR_AMBER} size={25} />
                         <Text style={styles.text_info}>{zoning?.area} m2</Text>
+                    </View>
+                    <View style={styles.box_info_item}>
+                        <Icon type={Constants.Styles.ICON_STYLE_FONT_AWESOME} name="arrows-v" color={Constants.Styles.COLOR_AMBER} size={25} />
+                        <Text style={styles.text_info}>{Math.round((zoning?.length || 0) * 10) / 10} m</Text>
+                    </View>
+                    <View style={styles.box_info_item}>
+                        <Icon type={Constants.Styles.ICON_STYLE_FONT_AWESOME} name="arrows-h" color={Constants.Styles.COLOR_AMBER} size={25} />
+                        <Text style={styles.text_info}>{zoning?.width} m</Text>
                     </View>
                 </View>
                 <View style={styles.text_description}>
-                    <Text style={styles.text_info_money}>Chi tiết</Text>
-                    <Text>Chiều rộng: {zoning?.width}</Text>
-                    <Text>Chiều dài: {zoning?.length}</Text>
                     <Text style={styles.text_info_money}>Mô tả:</Text>
-                    <Text>{zoning?.description == undefined ? zoning?.description : ""}</Text>
+                    <Text style={styles.text_info_detail}>{zoning?.description ? zoning?.description : ""}</Text>
                     <Text style={styles.text_info_money}>Liên hệ</Text>
-                    <Text style={styles.text_info}>Họ tên:{zoning?.user_name}</Text>
-                    <Text style={styles.text_info}>Số điện thoại:{zoning?.phonenumber}</Text>
+                    <Text style={styles.text_info_detail}>Họ tên:{zoning?.user_name}</Text>
+                    <Text style={styles.text_info_detail}>Số điện thoại:{zoning?.phonenumber}</Text>
                 </View>
             </View>
         </ScrollView >
     )
 }
 
-export default ZoningDetail
+export default ZoningDetail;
 

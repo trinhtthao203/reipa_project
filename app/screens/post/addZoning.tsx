@@ -37,8 +37,10 @@ const provinceService = new ProvinceService();
 const districtService = new DistrictService();
 const wardService = new WardService();
 
-const AddZoning = ({ navigation }: any) => {
+const AddZoning = ({ route, navigation }: any) => {
     const dispatch = useDispatch();
+
+    const [updateID, setUpdateID] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [countText, setCountText] = useState();
     const [visible1, setVisible1] = useState(false);
@@ -70,14 +72,14 @@ const AddZoning = ({ navigation }: any) => {
 
     const [Zoning, setZoning] = React.useState<IDataZoning>({
         user_id: userInfo.id || "",
-        name: "Đường cao tốc Ninh Kiều - Ô Môn",
-        purpose: "Đất giao thông",
-        address: "Ninh Kiều - Ô Môn",
+        name: "Chung cư SpringOut",
+        purpose: "Đất phức hợp",
+        address: "hẻm 3/2",
         dataImage: [],
         area: 0.0000,
         width: 0.0000,
         length: 0.0000,
-        description: ""
+        description: "Không có"
     });
 
     const updateZoningInfo = (newState: IDataZoning) => {
@@ -199,14 +201,14 @@ const AddZoning = ({ navigation }: any) => {
         updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
     }
 
-    const handleClickDistrict = (selected: any) => {
+    const handleClickDistrict = (province_id: any, selected: any) => {
         if (selected == 0) {
             updateZoningInfo({ district_id: "", ward_id: "" });
-            handleBorderProvince(Zoning.province_id);
+            handleBorderProvince(province_id);
             setWardData([]);
         } else {
             updateZoningInfo({ district_id: selected, ward_id: "" });
-            handleGetWard(Zoning.province_id, selected);
+            handleGetWard(province_id, selected);
             handleBorderDistrict(JSON.stringify(selected));
         }
         updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
@@ -223,10 +225,60 @@ const AddZoning = ({ navigation }: any) => {
         updateZoningInfo({ coordinates: "", length: 0, width: 0, area: 0 });
     }
 
+    const handleGetData = async (zoning_id: any) => {
+        try {
+            const result = await ZoningService.handleGetZoningByID(zoning_id);
+            updateZoningInfo({
+                id: result.data[0].id,
+                name: result.data[0].name,
+                purpose: result.data[0].purpose,
+                address: result.data[0].address,
+                description: result.data[0].description,
+                province_id: result.data[0].province_id,
+                district_id: result.data[0].district_id,
+                ward_id: result.data[0].ward_id,
+                typeof_zoning_id: result.data[0].typeof_zoning_id,
+            });
+            // console.log(JSON.stringify(result.data[0]))
+            // console.log(JSON.stringify(result.data[0].province_id))
+            if (result.data[0].province_id) {
+                handleClickProvince(result.data[0].province_id);
+            }
+            if (result.data[0].district_id) {
+                handleClickDistrict(result.data[0].province_id, result.data[0].district_id);
+            }
+            if (result.data[0].ward_id) {
+                handleClickWard(result.data[0].ward_id);
+            }
+            handleChangeArea(result.data[0].area);
+            handleChangeLength(result.data[0].length);
+            handleChangeWidth(result.data[0].width);
+            const resultImage = await ZoningService.handleGetImagesByID(zoning_id);
+            var arrImage = resultImage.data.map((image: any, ind: any) => {
+                return `${Constants.Api.IMAGES_URL}/${image.name}`
+            })
+            setImageList(arrImage);
+            const resultGeoJSON = await ZoningService.handleGetGeoJSONByID(zoning_id);
+            // console.log(resultGeoJSON.data.zoning[0].json_build_object.features[0].geometry);
+            if (resultGeoJSON.data.zoning[0].json_build_object.features[0].geometry.type === "MultiLineString")
+                setCoordinatesPolyline(resultGeoJSON.data.zoning[0].json_build_object.features[0].geometry.coordinates[0])
+            updateZoningInfo({ coordinates: resultGeoJSON.data.zoning[0].json_build_object.features[0].geometry });
+            setIsLoading(false);
+            setIsPolygon(result.data[0].ispolygon);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     useEffect(() => {
         handleGetTypeZoningList();
         handleGetLocation();
         handleGetProvinceList();
+        if (route.params) {
+            const { zoning_id } = route.params;
+            setUpdateID(zoning_id);
+            handleGetData(zoning_id);
+        }
     }, []);
 
     const isNull = (val: any) => {
@@ -300,7 +352,7 @@ const AddZoning = ({ navigation }: any) => {
         }
     }
 
-    const handleSave = async () => {
+    const checkError = () => {
         let flatN, flatF, flatP, flatL, flatAD, flatI = true;
         if (isNull(Zoning.name)) {
             flatN = true;
@@ -344,7 +396,7 @@ const AddZoning = ({ navigation }: any) => {
             })
         }
 
-        if (Zoning.dataImage?.length == 0) {
+        if (Zoning.dataImage?.length == 0 && !Zoning.id) {
             flatI = true;
             updateErrorInfo({
                 error: true,
@@ -385,8 +437,13 @@ const AddZoning = ({ navigation }: any) => {
                 errorCoordinatesdMsg: ""
             })
         }
-
-        if (flatF == false && flatL == false && flatN == false && flatP == false && flatAD == false && flatI == false && errorInfo.error == false) {
+        if (flatF == false && flatL == false && flatN == false && flatP == false && flatAD == false && flatI == false && errorInfo.error == false)
+            return true;
+        else
+            return false;
+    }
+    const handleSave = async () => {
+        if (checkError()) {
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
@@ -443,6 +500,69 @@ const AddZoning = ({ navigation }: any) => {
 
                 });
         }
+    }
+
+    const handleUpdate = async () => {
+        if (checkError()) {
+            setShowDialog(true);
+            setTypeDialog(Strings.System.LOADNING);
+            setContentDialog(Strings.Message.WAITTING_MESSAGE);
+            const formData = new FormData();
+            formData.append("id", Zoning.id);
+            formData.append("name", Zoning.name);
+            formData.append("purpose", Zoning.purpose);
+            formData.append("area", Zoning.area);
+            formData.append("address", Zoning.address);
+            formData.append("width", Zoning.width);
+            formData.append("length", Zoning.length);
+            formData.append("coordinates", JSON.stringify(Zoning.coordinates));
+            formData.append("ispolygon", isPolygon);
+            formData.append("description", Zoning.description);
+            formData.append("user_id", JSON.stringify(Zoning.user_id));
+            formData.append("province_id", Zoning.province_id ? Zoning.province_id : "");
+            formData.append("district_id", Zoning.district_id ? Zoning.district_id : "");
+            formData.append("ward_id", Zoning.ward_id ? Zoning.ward_id : "");
+            formData.append("typeof_zoning_id", Zoning.typeof_zoning_id);
+            formData.append("status_id", 1);
+            axios.post(Constants.Api.BASE_URL + Constants.ApiPath.UPDATE_ZONING, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+                .then(function (res) {
+                    setShowDialog(true);
+                    setTypeDialog(Strings.System.SUCCESS);
+                    setContentDialog(res.data.data.message);
+                    setTimeout(() => {
+                        setShowDialog(false);
+                        setTypeDialog("");
+                        setContentDialog("");
+                        navigation.navigate(ScreenName.MAINPOST)
+                    }, 1500);
+                })
+                .catch(function (error) {
+                    if (error.response.status !== 200) {
+                        console.log(error)
+                        setShowDialog(true);
+                        setTypeDialog(Strings.System.WARNING);
+                        setContentDialog(error.response.data.data.message);
+                    } else {
+                        setShowDialog(true);
+                        setTypeDialog(Strings.System.WARNING);
+                        setContentDialog(error.message);
+                    }
+                });
+        }
+    }
+    const handleChangeArea = (area: any) => {
+        updateZoningInfo({ area: area })
+    }
+
+    const handleChangeLength = (length: any) => {
+        updateZoningInfo({ length: length })
+    }
+    const handleChangeWidth = (width: any) => {
+        updateZoningInfo({ width: width })
     }
 
     if (isLoading) {
@@ -507,7 +627,7 @@ const AddZoning = ({ navigation }: any) => {
                         <Picker
                             selectedValue={Zoning.district_id}
                             onValueChange={(itemValue, itemIndex) =>
-                                handleClickDistrict(itemValue)
+                                handleClickDistrict(Zoning.province_id, itemValue)
                             }
                         >
                             <Picker.Item label={Strings.Zoning.DISTRICT} value={0} />
@@ -565,23 +685,23 @@ const AddZoning = ({ navigation }: any) => {
                         <TextInput
                             secure={false}
                             keyboardType="numeric"
-                            value={Zoning.area + ""}
+                            defaultValue={Zoning.area + ""}
                             label={Strings.Zoning.AREA}
-                            onChangeText={(val: any) => { updateZoningInfo({ area: val }) }}
+                            onChangeText={(val: any) => { handleChangeArea(val) }}
                         />
                         <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Zoning.length + ""}
                             label={Strings.Zoning.LENGTH}
-                            onChangeText={(val: any) => { updateZoningInfo({ length: val }) }}
+                            onChangeText={(val: any) => { handleChangeLength(val) }}
                         />
                         <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Zoning.width + ""}
                             label={Strings.Zoning.WIDTH}
-                            onChangeText={(val: any) => { updateZoningInfo({ width: val }) }}
+                            onChangeText={(val: any) => { handleChangeWidth(val) }}
                         />
                         <Text style={styles.label_style}>Hình ảnh</Text>
                         <ScrollView horizontal={true} style={{ width: "100%", height: "100%" }}>
@@ -630,12 +750,18 @@ const AddZoning = ({ navigation }: any) => {
                                 updateZoningInfo({ description: text })
                             }}
                             value={Zoning.description} />
-                        <Button
+                        {!Zoning.id ? <Button
                             title={Strings.Common.CONFIRM}
                             buttonStyle={{ backgroundColor: Constants.Styles.COLOR_AMBER, borderRadius: Constants.Styles.BORDER_RADIUS, height: Constants.Styles.TEXT_INPUT_HEIGHT }}
                             titleStyle={{ color: Constants.Styles.COLOR_BLACK, fontSize: Constants.Styles.TEXT_INPUT_FONTSIZE }}
                             onPress={() => { handleSave() }}
-                        />
+                        /> :
+                            <Button
+                                title={Strings.Common.UPDATE}
+                                buttonStyle={{ backgroundColor: Constants.Styles.COLOR_AMBER, borderRadius: Constants.Styles.BORDER_RADIUS, height: Constants.Styles.TEXT_INPUT_HEIGHT }}
+                                titleStyle={{ color: Constants.Styles.COLOR_BLACK, fontSize: Constants.Styles.TEXT_INPUT_FONTSIZE }}
+                                onPress={() => { handleUpdate() }}
+                            />}
                         <DialogCustom
                             show={showDialog}
                             type={typeDialog}
@@ -803,6 +929,7 @@ const AddZoning = ({ navigation }: any) => {
             if(isPolygon){
                 type="polygon";
                 var geoJsonGroup = L.geoJSON(${JSON.stringify(Zoning.coordinates)});
+                mymap.fitBounds(geoJsonGroup.getBounds());
                 addNonGroupLayers(geoJsonGroup, drawnItems);  
             }else{
                 type="polyline";

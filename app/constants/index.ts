@@ -1,8 +1,8 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-const DOMAIN = "http://10.1.15.109:8080"; // LIVE
-// const DOMAIN = "http://10.13.129.227:8080"; // LIVE
+// const DOMAIN = "http://10.1.15.109:8080"; // LIVE
+const DOMAIN = "http://10.13.129.213:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.
@@ -65,6 +65,7 @@ const Constants = {
 
     GET_ALL_ZONING: "/zoning/get_all_zonings",
     GET_ALL_ZONING_GEOJSON: "/zoning/geojson_zonings",
+    GET_ALL_ZONING_GEOJSON_BY_ID: "/zoning/geojson_by_id",
     GET_ALL_ZONING_GEOJSON_POLYGON: "/zoning/geojson_zonings_polygon",
     GET_ALL_ZONING_GEOJSON_POLYLINE: "/zoning/geojson_zonings_polyline",
     GET_ALL_ZONING_POLYGON_BY_ID: "/zoning/zonings_polygon_id",
@@ -73,7 +74,10 @@ const Constants = {
     GET_ZONING_BY_ID: "/zoning/get_by_id",
     ADD_ZONING: "/zoning/add_zonings",
     DELETE_ZONING: "/zoning/delete_zonings",
+    UPDATE_ZONING: "/zoning/update",
+
     ADD_POST: "/post/add_post",
+    UPDATE_POST: "/post/update",
 
     GET_ALL_INVESTOR: "/investor/get_all_investor",
     GET_ALL_TYPE_ZONING: "/type_of_zoning/get_all_type",
@@ -85,7 +89,11 @@ const Constants = {
 
     GET_POST_BY_DISTANCE: "/post/post_by_distance_latlng",
     GET_POST_BY_ID: "/post/get_by_id",
+    GET_POST_BY_USER_ID: "/post/get_by_user_id",
     GET_GEOJSON_POST: "/post/geojson_post",
+    GET_GEOJSON_POST_BY_ID: "/post/geojson_post_by_id",
+    GET_IMAGES: "/images/get_all_by_post_id",
+    DELETE_POST: "/post/delete_post",
 
     GET_ADDRESS_BY_LATLNG: "/get_address_by_latlng",
 
@@ -97,7 +105,7 @@ const Constants = {
 
   Styles: {
 
-    SIZE_AVATAR: 60,
+    SIZE_AVATAR: 80,
 
     COLOR_CHETWODE_BLUE: "#878DE1",
     COLOR_AMBER: "#F7C005",
@@ -107,6 +115,9 @@ const Constants = {
     COLOR_BLACK: "#201E11",
     CORLOR_WHITE: "#FFFFFF",
     CORLOR_ERROR: "#ED4337",
+    CORLOR_RED: "#e74c3c",
+    CORLOR_BLUE: "#45aaf2",
+    CORLOR_GREEN: "#78e08f",
 
     HORIZONTAL_SPACE_SIZE: 16,
     HORIZONTAL_SPACE_SIZE_LARGE: 32,

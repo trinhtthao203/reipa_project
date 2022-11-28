@@ -101,7 +101,49 @@ class Post {
             });
             return result;
         } catch (err) {
-            console.log("Furniture:", JSON.stringify(err));
+            console.log("handleGetAllImageByID :", JSON.stringify(err));
+        }
+    }
+
+    handleGetByUserID = async (user_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_POST_BY_USER_ID, {
+                user_id: user_id
+            });
+            return result;
+        } catch (err) {
+            console.log("post by user id:", JSON.stringify(err));
+        }
+    }
+
+    handleDeletePost = async (post_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.DELETE_POST, {
+                post_id: post_id
+            });
+            return result;
+        } catch (err) {
+            console.log("handleDeletePost :", JSON.stringify(err));
+        }
+    }
+    getImages = async (post_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_IMAGES, {
+                post_id: post_id
+            });
+            return result;
+        } catch (err) {
+            console.log("getImages :", JSON.stringify(err));
+        }
+    }
+    getGeoJSON = async (post_id) => {
+        try {
+            const result = apiProcessor.post(Constants.ApiPath.GET_GEOJSON_POST_BY_ID, {
+                post_id: post_id
+            });
+            return result;
+        } catch (err) {
+            console.log("getGeoJSON :", JSON.stringify(err));
         }
     }
 }

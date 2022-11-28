@@ -96,6 +96,7 @@ export interface IDataPostSelect {
     listDataPost: IDataPost[];
 }
 export interface IDataPost {
+    id?: string;
     title?: string;
     price?: number;
     address?: string;

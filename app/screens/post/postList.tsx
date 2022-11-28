@@ -8,7 +8,7 @@ import HeaderComp from '@app/components/HeaderComp'
 //component
 import DialogCustom from "@app/components/Dialog";
 import Loading from "@app/screens/loading";
-import { Button, Dialog, Icon, Card } from "@rneui/themed";
+import { Button, Dialog, Icon, Card, FAB } from "@rneui/themed";
 import { Text, View, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { IDataPost, IDataPostSelect } from "@app/commons/interfaces";
@@ -16,9 +16,11 @@ import { IDataPost, IDataPostSelect } from "@app/commons/interfaces";
 import Constants from "@app/constants";
 
 //function
-import styles from "./style";
 import zoningService from "@app/services/zoning.service";
+import postService from "@app/services/post.service";
+import styles from "./style";
 const ZoningService = new zoningService();
+const PostService = new postService();
 
 const PostList = ({ navigation }: any) => {
     const dispatch = useDispatch();
@@ -50,12 +52,10 @@ const PostList = ({ navigation }: any) => {
                 {
                     id: post.id,
                     title: post.title,
-                    price: post.price,
-                    address: post.address,
-                    area: post.area,
-                    dis_m: post.dis_m,
-                    lat: post.geometry.coordinates[0],
-                    lng: post.geometry.coordinates[1]
+                    status_id: post.status_id,
+                    status_name: post.status_name,
+                    typeof_posts_id: post.typeof_posts_id,
+                    description: post.description,
                 }
             ))]
         })
@@ -67,23 +67,25 @@ const PostList = ({ navigation }: any) => {
             ...newState,
         }));
     };
-    const getZoningByUserID = async (user_id: any) => {
-        const result = await ZoningService.handleGetZoningByUserID(user_id);
+    const getPostByUserID = async (user_id: any) => {
+        const result = await PostService.handleGetByUserID(user_id);
         setIsLoading(false);
         handleUpdatePostList(result.data);
-        result.data.map(async (zoning: any, ind: any) => {
-            const resultImage = await ZoningService.handleGetOneImageByZoningID(zoning.id);
-            arr[zoning.id] = resultImage.data[0].name;
+        result.data.map(async (post: any, ind: any) => {
+            const resultImage = await PostService.handleGetOneImageByPostID(post.id);
+            if (resultImage.data[0] != undefined) {
+                arr[post.id] = resultImage.data[0].name;
+            }
             updateArr(arr);
         })
     }
-    const goZoningDetailScreen = async (zoning_id: any) => {
-        navigation.navigate(ScreenName.ZONINGDETAIL, {
-            zoning_id: zoning_id
+    const goPostDetailScreen = async (post_id: any) => {
+        navigation.navigate(ScreenName.POSTDETAIL, {
+            post_id: post_id
         })
     }
-    const handleDelete = async (zoning_id: any) => {
-        const result = await ZoningService.handleDeleteZoning(zoning_id);
+    const handleDelete = async (post_id: any) => {
+        const result = await PostService.handleDeletePost(post_id);
         setShowDialog(true);
         setTypeDialog("success");
         setContentDialog(result.data.message);
@@ -91,16 +93,21 @@ const PostList = ({ navigation }: any) => {
             setShowDialog(false);
             setTypeDialog("");
             setContentDialog("");
-            getZoningByUserID(userInfo.id);
+            getPostByUserID(userInfo.id);
         }, 1500);
         toggleDialog2();
     }
-    const goZoningUpdateScreen = async (zoning_id: any) => {
-
+    const goPostUpdateScreen = async (post_id: any) => {
+        navigation.navigate(ScreenName.ADDPOST, {
+            post_id: post_id
+        })
     }
     useEffect(() => {
-        getZoningByUserID(userInfo.id);
+        getPostByUserID(userInfo.id);
     }, [])
+
+    const arrColor = [Constants.Styles.CORLOR_BLUE, Constants.Styles.CORLOR_GREEN, Constants.Styles.CORLOR_RED]
+    const arrImage = ["", "canmua.jpg", "", "canthue.jpg"]
 
     if (!userInfo.id) {
         return (
@@ -127,16 +134,24 @@ const PostList = ({ navigation }: any) => {
             return (
                 <ScrollView style={{ flex: 1 }}>
                     <HeaderComp title={Strings.Zoning.LIST_ZONING} height={17} />
-                    {postList.listDataPost.length > 0 && postList.listDataPost.map((zoning: any, ind: any) => (
-                        <Card key={zoning.id}>
-                            <Card.Title>{zoning.name}</Card.Title>
+                    {postList.listDataPost.length > 0 && postList.listDataPost.map((post: any, ind: any) => (
+                        <Card key={post.id}>
+                            <Card.Title style={{ fontSize: 18 }}>{post.title}</Card.Title>
                             <Card.Divider />
                             <Card.Image
-                                onPress={() => goZoningDetailScreen(zoning.id)}
+                                onPress={() => goPostDetailScreen(post.id)}
                                 style={{ padding: 0 }}
-                                source={{ uri: `${Constants.Api.IMAGES_URL}/${arr[zoning.id]}`, }}
+                                source={{ uri: (post.typeof_posts_id === 1 || post.typeof_posts_id === 3) ? `${Constants.Api.IMAGES_URL}/${arr[post.id]}` : `${Constants.Api.IMAGES_URL}/${arrImage[post.typeof_posts_id - 1]}` }}
                             />
-                            <Text style={{ marginVertical: 15 }}>{zoning.description == "undefined" ? "" : zoning.description}</Text>
+                            <FAB
+                                size="small"
+                                visible={true}
+                                title={post.status_name}
+                                titleStyle={{ fontSize: 13, fontWeight: "800", color: Constants.Styles.CORLOR_WHITE }}
+                                color={arrColor[post.status_id - 1]}
+                                style={{ position: "absolute", top: 35, left: -30 }}
+                            />
+                            <Text style={{ marginVertical: 15 }}>{post.description == "undefined" ? "" : post.description}</Text>
                             <View style={{ flexDirection: "row", display: "flex", justifyContent: "center" }}>
                                 <Button
                                     containerStyle={styles.btn_step1_container}
@@ -152,6 +167,7 @@ const PostList = ({ navigation }: any) => {
                                         marginBottom: 0,
                                     }}
                                     title={Strings.Common.UPDATE}
+                                    onPress={() => goPostUpdateScreen(post.id)}
                                 />
                                 <Button
                                     containerStyle={styles.btn_step1_container_delete}
@@ -169,7 +185,7 @@ const PostList = ({ navigation }: any) => {
                                     title={Strings.Common.DELETE}
                                     onPress={() => {
                                         toggleDialog2();
-                                        setID(zoning.id);
+                                        setID(post.id);
                                     }}
                                 />
                             </View>
@@ -196,8 +212,6 @@ const PostList = ({ navigation }: any) => {
         }
 
     }
-
-
 }
 
 export default PostList;
