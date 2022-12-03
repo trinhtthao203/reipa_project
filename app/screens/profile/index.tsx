@@ -46,7 +46,7 @@ const Profile = ({ navigation }: any) => {
         {
             title: 'Địa chỉ',
             icon: 'location-outline',
-            value: `${userInfo.ward_name ? userInfo.ward_name : ""}, ${userInfo.district_name ? userInfo.district_name : ""}, ${userInfo.province_name ? userInfo.province_name : ""}`
+            value: userInfo.address,
         },
         {
             title: 'Ngày tham gia',

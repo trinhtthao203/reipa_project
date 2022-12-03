@@ -345,8 +345,7 @@ const AddPost = ({ route, navigation }: any) => {
             updateInfoAddress(addressStoreInfo.province_id, addressStoreInfo.district_id, addressStoreInfo.ward_id);
             setLat(addressStoreInfo.lat_store);
             setLng(addressStoreInfo.lng_store);
-            let a =
-                updatePostInfo({ coordinates: JSON.stringify({ "coordinates": [addressStoreInfo.lat_store, addressStoreInfo.lng_store], "type": "Point" }) })
+            updatePostInfo({ coordinates: JSON.stringify({ "coordinates": [addressStoreInfo.lat_store, addressStoreInfo.lng_store], "type": "Point" }) })
         } else {
             handleGetLocation();
         }
@@ -549,7 +548,7 @@ const AddPost = ({ route, navigation }: any) => {
                         setShowDialog(false);
                         setTypeDialog("");
                         setContentDialog("");
-                        navigation.navigate(ScreenName.MAINPOST)
+                        navigation.navigate(ScreenName.HOME)
                     }, 1500);
                 })
                 .catch(function (error) {
@@ -901,7 +900,7 @@ const AddPost = ({ route, navigation }: any) => {
                             overlayStyle={{ width: "95%", padding: 0 }}
                         >
                             <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
-                                <Dialog.Title title={Strings.Zoning.DEFINE_LOCATION} titleStyle={{ color: "black", fontWeight: "500", fontSize: 16, paddingTop: 10, paddingLeft: 10, width: "80%" }} />
+                                <Dialog.Title title={Strings.Post.DEFINE_LOCATION} titleStyle={{ color: "black", fontWeight: "500", fontSize: 16, paddingTop: 10, paddingLeft: 10, width: "80%" }} />
                                 <Dialog.Actions>
                                     <Dialog.Button onPress={toggleDialog1} ><Icon reverse name="close" type={Constants.Styles.ICON_STYLE_FONT_IONICON} color={Constants.Styles.COLOR_GHOST} size={10} /></Dialog.Button>
                                 </Dialog.Actions>
@@ -923,8 +922,7 @@ const AddPost = ({ route, navigation }: any) => {
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
         <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>        
         <script src="${Constants.Api.FILES_URL}/leaflet-corridor.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -966,9 +964,10 @@ const AddPost = ({ route, navigation }: any) => {
         }
     </style>
     <body style="padding: 0; margin: 0">
-    <script src="https://unpkg.com/leaflet-draw@0.4.0/dist/leaflet.draw.js"></script> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
+    <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script> 
     <script src="https://leaflet.github.io/Leaflet.draw/src/Leaflet.Draw.Event.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.0/dist/leaflet.draw.css"> 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.0/dist/leaflet.draw.css"/> 
     <div id="mapid"></div>
     <input id="file" type="file" value="Upload file GeoJSON">
     <input type="button" id="submit" value="Xác nhận">

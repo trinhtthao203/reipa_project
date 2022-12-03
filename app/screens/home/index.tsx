@@ -392,6 +392,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css" />
                                 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
                                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
+                                <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.0/dist/leaflet.draw.css"/> 
                             </head>
                             <style>
                                 #mapid{
@@ -420,8 +421,8 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 }
                                 #goButton {
                                     position: absolute;
-                                    top: 20px;
-                                    right: 20px;
+                                    top: 60px;
+                                    right: 12px;
                                     padding: 10px;
                                     z-index: 400;
                                 }                                  
@@ -457,6 +458,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                             <script src="https://unpkg.com/leaflet@latest/dist/leaflet-src.js"></script>
                             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
                             <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
+                            <script src="https://leaflet.github.io/Leaflet.draw/src/Leaflet.Draw.Event.js"></script>
                             <script src="${Constants.Api.FILES_URL}/leaflet-corridor.js"></script>
                             <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
                             <script>
@@ -465,9 +467,106 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         maxZoom: 18,
                                         attribution: 'Map data &copy; OpenStreetMap contributors, ',
                                         id: 'mapbox/streets-v11'
-                                })
-                                // https://api.mapbox.com/styles/v1/trinhtthao203/clactgwqy000415pgmc7covz8/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoidHJpbmh0dGhhbzIwMyIsImEiOiJja3VneDVyOWYyOGhoMnZubmtnZjVuZWZ3In0.sQaNoVu6uUvh2EXk5WbXMw
-                                osm.addTo(mymap);
+                                }).addTo(mymap)
+                                
+                                var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                                    subdomains: 'abcd',
+                                        maxZoom: 19
+                                    });
+                                    CartoDB_DarkMatter.addTo(mymap);
+                                    
+                                    // Google Map Layer                                    
+                                    googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+                                        maxZoom: 20,
+                                        subdomains:['mt0','mt1','mt2','mt3']
+                                     });
+                                     googleStreets.addTo(mymap);
+                                    
+                                     // Satelite Layer
+                                    googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+                                       maxZoom: 20,
+                                       subdomains:['mt0','mt1','mt2','mt3']
+                                     });
+                                    googleSat.addTo(mymap);
+                                    
+                                    var baseLayers = {
+                                        "Satellite":googleSat,
+                                        "Google Map":googleStreets,
+                                        "OpenStreetMap": osm,
+                                    };
+
+                                var drawnItems, drawControl;
+                                //khai báo featuregroup để vẽ
+                                drawnItems = L.featureGroup().addTo(mymap);	
+                            
+                                //Option của công cụ vẽ
+                                var optionTools = {
+                                    position: "topleft",
+                                    draw: {
+                                        polyline: {
+                                            shapeOptions: {
+                                                color: "#eb2f06",
+                                                weight: 3,
+                                                opacity: 1
+                                            },
+                                            metric: true, //default true là met; false là foot
+                                        },
+                                        polygon: {
+                                            shapeOptions: {
+                                                color: "#eb2f06",
+                                                opacity: 1
+                                            },
+                                            showArea: true, //default false
+                                        },
+                                        rectangle: false,
+                                        marker: false,
+                                        circle: false,
+                                        circlemarker: false, // Turns off this drawing tool
+                                    },
+                                    edit: {
+                                        featureGroup: drawnItems,	//REQUIRED!!
+                                        delete:false,
+                                        edit:false,
+                                    }
+                                };
+                                drawControl = new L.Control.Draw(optionTools).addTo(mymap);
+
+                                //Khi vẽ thì thêm vào lớp drawnItems
+                                function showText(e) {
+                                    drawnItems.clearLayers();
+                                    var layer = e.layer;
+                                    var type = e.layerType;
+                                    layer.addTo(drawnItems);
+
+                                        if (type === "polygon") {
+                                            var seeArea = L.GeometryUtil.geodesicArea(
+                                                layer.getLatLngs()[0]
+                                            );
+                                            e.layer.bindPopup ( "Diện tích: " + seeArea.toFixed(3) + " m2");
+                                            e.layer.openPopup();
+                                        }
+                                            
+                                        if (type === "polyline") {
+                                            var tempLatLng = null;
+                                            var totalDistance = 0.0;
+                                            $.each(e.layer._latlngs, function (i, latlng) {
+                                                if (tempLatLng == null) {
+                                                    tempLatLng = latlng;
+                                                    return;
+                                                }
+
+                                                totalDistance += tempLatLng.distanceTo(latlng);
+                                                tempLatLng = latlng;
+                                            });
+                                            // e.layer.bindTooltip("Khoảng cách:" + totalDistance.toFixed(2) + " m", {permanent: true});
+                                            e.layer.bindPopup("Khoảng cách:" + totalDistance.toFixed(2) + " m");
+                                            e.layer.openPopup();
+                                        }                                 
+                                }
+
+                                //Khi một đối tượng được vẽ
+                                mymap.on(L.Draw.Event.CREATED, showText);	
 
                                 //Định các style cho point, line và polygon
                                 var redIcon = L.icon({
@@ -532,9 +631,11 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     }
                                 };
 
+                                //...................................Show Point........................
+
                                 var markerOnMap = L.marker([${lat}, ${lng}], {icon:redIcon}).addTo(mymap); 
                                 var id;
-                                mymap.on('click', function (e) {
+                                mymap.on('contextmenu', function (e) {
                                     if (markerOnMap !== null) {
                                         mymap.removeLayer(markerOnMap);
                                     }
@@ -558,7 +659,8 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         sendLatLng(latlng);
                                     }
                                 }     
-                                                                
+                                      
+                                //..........................Show Polygon...........................
                                 function onEachFeaturePolygon(feature, layer) {
                                     if(isMarkerInsidePolygon(markerOnMap,feature.geometry.coordinates[0])){
                                         id = feature.properties.id;
@@ -576,12 +678,13 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     },
                                     pointToLayer: function (feature, latlng) {
                                     return L.circleMarker(latlng, geojsonMarkerOptions);
-                                }}).addTo(mymap)          
+                                }}).addTo(mymap);       
                                 
                                 //................................>> Show Popup Point <<.........................
                                 var geoPointLayer = L.geoJSON(geoPoint,{
                                     onEachFeature:onEachFeaturePoint
                                 }).addTo(mymap);
+
                                 function onEachFeaturePoint(feature, layer) {   
                                     if (feature.properties && feature.properties.title ) {
                                         layer.bindPopup('<h3>Tiêu đề: '+feature.properties.title+'</h3>' +
@@ -592,10 +695,10 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                       }
                                 }
                                 //....................................>>Show Polyline<<.................
-
                                 var geoPolylineLayer = L.geoJSON(geoPolyline,{
                                     onEachFeature:onEachFeaturePolyline
                                 })
+
                                 function onEachFeaturePolyline(feature, layer) {     
                                     var arrGeoPolyline;
                                     if(feature.geometry.type=="MultiLineString"){
@@ -613,13 +716,14 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     };
                                     var corridor = L.corridor([arrLatlngGeoPolyline], options);
                                     corridor.addTo(mymap);
-                
-                                    var optionsShadow = { 
-                                        corridor:feature.properties.width*10, // meters
-                                        className: 'route-corridor-shadow', 
+
+                                    var overlays = {
+                                        "Bài đăng":geoPointLayer,
+                                        "Quy hoạch đường":corridor,
+                                        "Quy hoạch vùng":geoPolygonLayer
                                     };
-                                    var corridorShadow = L.corridor([arrLatlngGeoPolyline], optionsShadow)
-                                    corridorShadow.addTo(mymap);
+
+                                    L.control.layers(baseLayers, overlays).addTo(mymap);
                                 }
 
                                 function handleDetail(id){

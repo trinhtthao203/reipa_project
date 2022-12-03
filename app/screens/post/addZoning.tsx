@@ -483,7 +483,7 @@ const AddZoning = ({ route, navigation }: any) => {
                         setShowDialog(false);
                         setTypeDialog("");
                         setContentDialog("");
-                        navigation.navigate(ScreenName.MAINPOST)
+                        navigation.navigate(ScreenName.HOME)
                     }, 1500);
                 })
                 .catch(function (error) {

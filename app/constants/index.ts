@@ -1,8 +1,8 @@
 import Strings from "@app/commons/strings";
 import { AppStateEvent, BackPressEventName, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
-// const DOMAIN = "http://10.1.15.109:8080"; // LIVE
-const DOMAIN = "http://10.13.129.213:8080"; // LIVE
+const DOMAIN = "http://172.20.10.9:8080"; // LIVE
+// const DOMAIN = "http://10.10.40.119:8080"; // LIVE
 const Constants = {
   /**
    * Config for api.

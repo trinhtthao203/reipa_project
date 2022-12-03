@@ -133,7 +133,7 @@ const PostList = ({ navigation }: any) => {
         } else {
             return (
                 <ScrollView style={{ flex: 1 }}>
-                    <HeaderComp title={Strings.Zoning.LIST_ZONING} height={17} />
+                    <HeaderComp title={Strings.Post.LIST_POST} height={17} />
                     {postList.listDataPost.length > 0 && postList.listDataPost.map((post: any, ind: any) => (
                         <Card key={post.id}>
                             <Card.Title style={{ fontSize: 18 }}>{post.title}</Card.Title>

@@ -81,7 +81,7 @@ export default {
         TYPEOFPOST_REQUIRE_MESSAGE: "Vui lòng chọn loại bài đăng",
         PRICE_REQUIRE_MESSAGE: "Vui lòng nhập mức giá",
         AREA_REQUIRE_MESSAGE: "Vui lòng nhập diện tích",
-
+        DEFINE_LOCATION: "Xác định vị trí bài đăng trên bản đồ",
     },
 
     Zoning: {

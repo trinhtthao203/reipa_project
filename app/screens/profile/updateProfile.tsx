@@ -24,7 +24,7 @@ const Profile = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [typeDialog, setTypeDialog] = useState("");
     const [contentDialog, setContentDialog] = useState("");
-    // const [isUpdate, setIsUpdate] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
     const { userInfo } = useSelector(
         (state: RootState) => state.user
     );
@@ -36,7 +36,7 @@ const Profile = () => {
         role_id: 2,
         showPassword: false,
         showConfirmPassword: false,
-        isUpdate: false,
+        // isUpdate: false,
     });
 
     const updateUserInfo = (newState: IUserInfo) => {

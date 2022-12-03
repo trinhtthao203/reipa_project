@@ -26,10 +26,6 @@ interface IData {
     password?: string;
     confirmPassword?: string;
     address?: string;
-    province_id?: string;
-    district_id?: string;
-    ward_id?: string;
-    street_id?: string;
     role_id?: number;
     showPassword?: boolean;
     showConfirmPassword?: boolean;
@@ -40,10 +36,6 @@ interface IErrorUserInfo {
     errorPhoneNumberMsg?: string,
     errorFullNameMsg?: string,
     errorAddressMsg?: string,
-    errorProvinceMsg?: string,
-    errorDistrictMsg?: string,
-    errorWardMsg?: string,
-    errorStreetMsg?: string,
     errorRoleMsg?: string,
     errorPasswordMsg?: string,
     errorConfirmPasswordMsg?: string,
@@ -91,7 +83,7 @@ const SignUp = ({ navigation }: any) => {
     }
 
     const handleSignUp = async () => {
-        let flatFN, flatPR, flatDI, flatWA, flatAD, flatPW, flatPN = true;
+        let flatFN, flatAD, flatPW, flatPN = true;
 
         if (isNull(userInfo.phonenumber)) {
             flatPN = true;
@@ -124,48 +116,6 @@ const SignUp = ({ navigation }: any) => {
             updateErrorUserInfo({
                 error: false,
                 errorFullNameMsg: ""
-            })
-        }
-
-        if (isNull(userInfo.province_id)) {
-            flatPR = true;
-            updateErrorUserInfo({
-                error: true,
-                errorProvinceMsg: Strings.Message.PROVINCE_REQUIRED_MESSAGE
-            })
-        } else {
-            flatPR = false;
-            updateErrorUserInfo({
-                error: false,
-                errorProvinceMsg: ""
-            })
-        }
-
-        if (isNull(userInfo.district_id)) {
-            flatDI = true;
-            updateErrorUserInfo({
-                error: true,
-                errorDistrictMsg: Strings.Message.DISTRICT_REQUIRED_MESSAGE
-            })
-        } else {
-            flatDI = false;
-            updateErrorUserInfo({
-                error: false,
-                errorDistrictMsg: ""
-            })
-        }
-
-        if (isNull(userInfo.ward_id)) {
-            flatWA = true;
-            updateErrorUserInfo({
-                error: true,
-                errorWardMsg: Strings.Message.WARD_REQUIRED_MESSAGE
-            })
-        } else {
-            flatWA = false;
-            updateErrorUserInfo({
-                error: false,
-                errorWardMsg: ""
             })
         }
 
@@ -224,12 +174,12 @@ const SignUp = ({ navigation }: any) => {
             })
         }
 
-        if (flatPW == false && flatPN == false && flatFN == false && flatPR == false && flatDI == false && flatWA == false && flatAD == false && errorUserInfo.error == false) {
+        if (flatPW == false && flatPN == false && flatFN == false && flatAD == false && errorUserInfo.error == false) {
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
             try {
-                const result = await userService.handleRegister(userInfo.phonenumber, userInfo.password, userInfo.fullname, userInfo.address, userInfo.street_id, userInfo.ward_id, userInfo.role_id,);
+                const result = await userService.handleRegister(userInfo.phonenumber, userInfo.password, userInfo.fullname, userInfo.address, userInfo.role_id,);
                 if (result.code !== 200) {
                     setShowDialog(true);
                     setTypeDialog(Strings.System.WARNING);
@@ -254,69 +204,6 @@ const SignUp = ({ navigation }: any) => {
             }
         }
     }
-
-    const [provinceData, setProvinceData] = React.useState([]);
-    const handleGetProvinceList = async () => {
-        try {
-            const result = await userService.handleGetProvinceList();
-            setProvinceData(result.data.provinces);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const [districtData, setDistrictData] = React.useState([]);
-    const handleGetDistrict = async (province_id: any) => {
-        try {
-            const result = await userService.handleGetDistrictByProvince(province_id);
-            setDistrictData(result.data.district);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const [wardData, setWardData] = React.useState([]);
-    const handleGetWard = async (province_id: any, district_id: any) => {
-        try {
-            const result = await userService.handleGetWardList(province_id, district_id);
-            setWardData(result.data.ward);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const [streetData, setStreetData] = React.useState([]);
-    const handleGetStreet = async (province_id: any, district_id: any) => {
-        try {
-            const result = await userService.handleGetStreetList(province_id, district_id);
-            setStreetData(result.data.streets);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const handleClickProvince = (selected: any) => {
-        updateUserInfo({ province_id: selected });
-        handleGetDistrict(selected);
-    }
-
-    const handleClickDistrict = (selected: any) => {
-        updateUserInfo({ district_id: selected });
-        handleGetWard(userInfo.province_id, selected);
-        handleGetStreet(userInfo.province_id, selected);
-    }
-
-    const handleClickWard = (selected: any) => {
-        updateUserInfo({ ward_id: selected });
-    }
-
-    const handleClickStreet = (selected: any) => {
-        updateUserInfo({ street_id: selected });
-    }
-
-    React.useEffect(() => {
-        handleGetProvinceList();
-    }, [])
 
     return (
         <ImageBackground source={House} resizeMode="cover" style={styles.container}>
@@ -349,131 +236,6 @@ const SignUp = ({ navigation }: any) => {
                         errorMessage={errorUserInfo.errorFullNameMsg}
                         onChangeText={(val: any) => { updateUserInfo({ fullname: val }) }}
                     />
-                    <View style={{ width: "85%", marginHorizontal: 32, backgroundColor: Constants.Styles.CORLOR_WHITE }}>
-                        <Text style={styles.label_dropdown_style}>Tỉnh/Thành Phố</Text>
-                        <Picker
-                            selectedValue={userInfo.province_id}
-                            onValueChange={(itemValue, itemIndex) =>
-                                handleClickProvince(itemValue)
-                            }
-                        >
-                            {provinceData &&
-                                provinceData.map((val: any, ind: any) => {
-                                    return (
-                                        <Picker.Item key={ind} label={val.name} value={val.id} />
-                                    )
-                                })
-                            }
-                        </Picker>
-                        {errorUserInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorProvinceMsg}</Text>}
-                        <Text style={styles.label_dropdown_style}>Quận/Huyện</Text>
-                        <Picker
-                            selectedValue={userInfo.district_id}
-                            onValueChange={(itemValue, itemIndex) =>
-                                handleClickDistrict(itemValue)
-                            }
-                        >
-                            {districtData &&
-                                districtData.map((val: any, ind: any) => {
-                                    return (
-                                        <Picker.Item key={ind} label={val.name} value={val.id} />
-                                    )
-                                })
-                            }
-                        </Picker>
-                        {errorUserInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorDistrictMsg}</Text>}
-                        <Text style={styles.label_dropdown_style}>Xã/Phường</Text>
-                        <Picker
-                            selectedValue={userInfo.ward_id}
-                            onValueChange={(itemValue, itemIndex) =>
-                                handleClickWard(itemValue)}
-                        >
-                            {wardData &&
-                                wardData.map((val: any, ind: any) => {
-                                    return (
-                                        <Picker.Item key={ind} label={val.name} value={val.id} />
-                                    )
-                                })
-                            }
-                        </Picker>
-                        {errorUserInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorWardMsg}</Text>}
-                        <Text style={styles.label_dropdown_style}>Đường</Text>
-                        <Picker
-                            selectedValue={userInfo.street_id}
-                            onValueChange={(itemValue, itemIndex) =>
-                                handleClickStreet(itemValue)}
-                        >
-                            {streetData &&
-                                streetData.map((val: any, ind: any) => {
-                                    return (
-                                        <Picker.Item key={ind} label={val.name} value={val.id} />
-                                    )
-                                })
-                            }
-                        </Picker>
-                        {errorUserInfo.errorStreetMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorStreetMsg}</Text>}
-                    </View>
-                    {/* <View style={{ width: "85%", marginHorizontal: 32, backgroundColor: Constants.Styles.CORLOR_WHITE }}>
-                        <SelectList
-                            maxHeight={250}
-                            placeholder={"Chọn Tỉnh/ Thành phố *"}
-                            dropdownStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownTextStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            inputStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            setSelected={setSelected}
-                            data={provinceData}
-                            onSelect={() => {
-                                updateUserInfo({ province_id: selected, district_id: "", ward_id: "", street_id: "" });
-                                handleGetDistrict(selected);
-                            }}
-                        />
-                        {errorUserInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorProvinceMsg}</Text>}
-                        {userInfo.province_id !== "" && <SelectList
-                            maxHeight={250}
-                            placeholder={"Chọn Quận/Huyện *"}
-                            boxStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownTextStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            inputStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            setSelected={setSelected}
-                            data={districtData}
-                            onSelect={() => {
-                                updateUserInfo({ district_id: selected });
-                                handleGetWard(userInfo.province_id, selected);
-                                handleGetStreet(userInfo.province_id, selected)
-
-                            }}
-                        />}
-                        {userInfo.province_id != "" && errorUserInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorDistrictMsg}</Text>}
-                        {userInfo.province_id != "" && userInfo.district_id != "" && <SelectList
-                            maxHeight={250}
-                            placeholder={"Chọn Xã/ Phường *"}
-                            boxStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownTextStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            inputStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            setSelected={setSelected}
-                            data={wardData}
-                            onSelect={() => {
-                                updateUserInfo({ ward_id: selected });
-                            }}
-                        />
-                        }
-                        {userInfo.province_id != "" && userInfo.district_id != "" && errorUserInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorUserInfo.errorWardMsg}</Text>}
-                        {userInfo.province_id != "" && userInfo.district_id != "" && <SelectList
-                            maxHeight={250}
-                            placeholder={"Chọn Đường"}
-                            boxStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownStyles={{ backgroundColor: Constants.Styles.CORLOR_WHITE }}
-                            dropdownTextStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            inputStyles={{ color: Constants.Styles.COLOR_BLACK }}
-                            setSelected={setSelected}
-                            data={streetData}
-                            onSelect={() => {
-                                updateUserInfo({ street_id: selected });
-                            }}
-                        />}
-                    </View> */}
                     <InputCustom
                         secure={false}
                         value={userInfo.address}

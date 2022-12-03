@@ -93,15 +93,13 @@ class UserService {
         }
 
     }
-    handleRegister = async (phonenumber, password, fullname, address, street_id, ward_id, role_id) => {
+    handleRegister = async (phonenumber, password, fullname, address, role_id) => {
         try {
             const result = apiProcessor.post(Constants.ApiPath.REGISTER, {
                 phonenumber: phonenumber,
                 password: password,
                 fullname: fullname,
                 address: address,
-                street_id: street_id,
-                ward_id: ward_id,
                 role_id: role_id,
             });
             return result;

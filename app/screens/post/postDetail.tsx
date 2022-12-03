@@ -24,6 +24,7 @@ const PostDetail = ({ route, navigation }: any) => {
         try {
             const result = await PostService.handleGetPostByID(post_id);
             setPost(result.data[0]);
+            console.log(result.data[0])
             if (result.data[0].typeof_posts_id == 2) {
                 setImages([{ img: `${Constants.Api.IMAGES_URL}/canmua.jpg` }])
             } else if (result.data[0].typeof_posts_id == 4) {
@@ -122,10 +123,8 @@ const PostDetail = ({ route, navigation }: any) => {
                     {
                         listInfoBox.map((item, i) => (
                             <View key={i} style={styles.box_info_item}>
-                                <ListItem containerStyle={{ padding: 0, marginVertical: 10 }}>
-                                    <Icon style={{ padding: 0, margin: 0 }} type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} color={Constants.Styles.COLOR_AMBER} size={25} />
-                                    <ListItem.Title>{item.value}</ListItem.Title>
-                                </ListItem>
+                                <Icon style={{ padding: 0, margin: 0 }} type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} color={Constants.Styles.COLOR_AMBER} size={25} />
+                                <ListItem.Title>{item.value}</ListItem.Title>
                             </View>
                         ))
                     }
@@ -141,7 +140,7 @@ const PostDetail = ({ route, navigation }: any) => {
                         ))
                     }
                     <Text style={styles.text_info_content}>Mô tả:</Text>
-                    <ListItem.Title><Text>{post?.description == null ? post?.description : "Chưa có mô tả"}</Text></ListItem.Title>
+                    <ListItem.Title><Text>{post?.description}</Text></ListItem.Title>
                     <Text style={styles.text_info_content}>Liên hệ</Text>
                     {
                         listInfo.map((item, i) => (
