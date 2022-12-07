@@ -421,8 +421,8 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 }
                                 #goButton {
                                     position: absolute;
-                                    top: 60px;
-                                    right: 12px;
+                                    top: 10px;
+                                    right: 60px;
                                     padding: 10px;
                                     z-index: 400;
                                 }                                  

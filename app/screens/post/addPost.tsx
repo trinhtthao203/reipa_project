@@ -397,7 +397,7 @@ const AddPost = ({ route, navigation }: any) => {
                 sortOrder: "desc",
             })
                 .then((images: any) => {
-                    if (images.length > 10) {
+                    if (images.length > 20) {
                         setShowDialog(true);
                         setTypeDialog("warning");
                         setContentDialog(Strings.Zoning.WARNING_MAX_IMAGE);
@@ -800,7 +800,7 @@ const AddPost = ({ route, navigation }: any) => {
                             secure={false}
                             keyboardType="numeric"
                             value={Post.price + ""}
-                            label={(Post.typeof_posts_id == "2" || Post.typeof_posts_id == "4") ? "Mức giá" : Strings.Post.PRICE}
+                            label={(Post.typeof_posts_id == "3" || Post.typeof_posts_id == "4") ? "Mức giá" : Strings.Post.PRICE}
                             onChangeText={(val: any) => { updatePostInfo({ price: val }) }}
                         />
                         {errorInfo.errorPriceMsg != null && <Text style={styles.error_info}>{errorInfo.errorPriceMsg}</Text>}
@@ -1004,7 +1004,8 @@ const AddPost = ({ route, navigation }: any) => {
                 polygon: false,
                 polyline: false,
                 circle:false,
-                rectangle:false
+                rectangle:false,
+                circlemarker:false
             },
             edit: {
                 featureGroup: drawnItems,	//REQUIRED!!

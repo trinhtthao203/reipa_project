@@ -107,13 +107,12 @@ const ForgetPassword = ({ navigation }: any) => {
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
             try {
                 const result = await userService.handleCheckPhoneNumber(userInfo.phonenumber);
-                console.log(result.code)
-                if (result.code != 200) {
+                if (result.code !== 200) {
                     setShowDialog(true);
                     setTypeDialog("warning");
                     setContentDialog(result.data.message);
                 }
-                if (result.code == 200) {
+                if (result.code === 200) {
                     setShowDialog(true);
                     setTypeDialog("success");
                     setContentDialog("");
@@ -208,7 +207,6 @@ const ForgetPassword = ({ navigation }: any) => {
                 console.log("forget ", JSON.stringify(e));
             }
         }
-
     }
 
     return (

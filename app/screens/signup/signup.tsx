@@ -26,6 +26,10 @@ interface IData {
     password?: string;
     confirmPassword?: string;
     address?: string;
+    province_id?: string;
+    district_id?: string;
+    ward_id?: string;
+    street_id?: string;
     role_id?: number;
     showPassword?: boolean;
     showConfirmPassword?: boolean;
@@ -39,6 +43,10 @@ interface IErrorUserInfo {
     errorRoleMsg?: string,
     errorPasswordMsg?: string,
     errorConfirmPasswordMsg?: string,
+    errorProvinceMsg?: string,
+    errorDistrictMsg?: string,
+    errorWardMsg?: string,
+    errorStreet_idMsg?: string,
 }
 
 const SignUp = ({ navigation }: any) => {
@@ -47,6 +55,15 @@ const SignUp = ({ navigation }: any) => {
     const [showDialog, setShowDialog] = React.useState(false);
     const [typeDialog, setTypeDialog] = React.useState("");
     const [contentDialog, setContentDialog] = React.useState("");
+    const [errorInfo, setErrorInfo] = React.useState<IErrorUserInfo>({
+    });
+
+    const updateErrorInfo = (newState: IErrorUserInfo) => {
+        setErrorInfo((prevState) => ({
+            ...prevState,
+            ...newState,
+        }));
+    };
 
     const [userInfo, setUserInfo] = React.useState<IData>({
         role_id: 2,
@@ -81,9 +98,85 @@ const SignUp = ({ navigation }: any) => {
         else
             return false;
     }
+    const [provinceData, setProvinceData] = React.useState([]);
+    const handleGetProvinceList = async () => {
+        try {
+            const result = await userService.handleGetProvinceList();
+            console.log(result);
+            setProvinceData(result.data.provinces);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const [districtData, setDistrictData] = React.useState([]);
+    const handleGetDistrict = async (province_id: any) => {
+        try {
+            const result = await userService.handleGetDistrictByProvince(province_id);
+            setDistrictData(result.data.district);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const [wardData, setWardData] = React.useState([]);
+    const handleGetWard = async (province_id: any, district_id: any) => {
+        try {
+            const result = await userService.handleGetWardList(province_id, district_id);
+            setWardData(result.data.ward);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const [streetData, setStreetData] = React.useState([]);
+    const handleGetStreet = async (province_id: any, district_id: any) => {
+        try {
+            const result = await userService.handleGetStreetList(province_id, district_id);
+            setStreetData(result.data.streets);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    const handleClickProvince = (province_id: any) => {
+        if (province_id == 0) {
+            updateUserInfo({ province_id: "", district_id: "", ward_id: "", street_id: "" });
+            setDistrictData([]);
+            setWardData([]);
+        } else {
+            updateUserInfo({ province_id: province_id, district_id: "", ward_id: "", street_id: "" });
+            handleGetDistrict(province_id);
+        }
+    }
+
+    const handleClickDistrict = (province_id: any, district_id: any) => {
+        if (district_id == 0) {
+            updateUserInfo({ district_id: "", ward_id: "", street_id: "" });
+            setWardData([]);
+        } else {
+            updateUserInfo({ district_id: district_id, ward_id: "", street_id: "" });
+            handleGetWard(province_id, district_id);
+            handleGetStreet(province_id, district_id);
+        }
+    }
+
+    const handleClickWard = (ward_id: any) => {
+        if (ward_id == 0) {
+            updateUserInfo({ ward_id: "" });
+        } else {
+            updateUserInfo({ ward_id: ward_id });
+        }
+    }
+    const handleClickStreet = (street_id: any) => {
+        if (street_id == 0) {
+            updateUserInfo({ street_id: "" });
+        } else {
+            updateUserInfo({ street_id: street_id });
+        }
+    }
 
     const handleSignUp = async () => {
-        let flatFN, flatAD, flatPW, flatPN = true;
+        let flatFN, flatAD, flatPW, flatPN, flatPR = true;
 
         if (isNull(userInfo.phonenumber)) {
             flatPN = true;
@@ -133,6 +226,20 @@ const SignUp = ({ navigation }: any) => {
             })
         }
 
+        if (isNull(userInfo.province_id)) {
+            flatPR = true;
+            updateErrorUserInfo({
+                error: true,
+                errorProvinceMsg: "Vui lòng chọn mã tỉnh"
+            })
+        } else {
+            flatPR = false;
+            updateErrorUserInfo({
+                error: false,
+                errorProvinceMsg: ""
+            })
+        }
+
         if (isNull(userInfo.password)) {
             flatPW = true;
             updateErrorUserInfo({
@@ -174,7 +281,7 @@ const SignUp = ({ navigation }: any) => {
             })
         }
 
-        if (flatPW == false && flatPN == false && flatFN == false && flatAD == false && errorUserInfo.error == false) {
+        if (flatPR == false && flatPW == false && flatPN == false && flatFN == false && flatAD == false && errorUserInfo.error == false) {
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
@@ -204,6 +311,10 @@ const SignUp = ({ navigation }: any) => {
             }
         }
     }
+    React.useEffect(() => {
+        console.log("akb")
+        handleGetProvinceList();
+    }, []);
 
     return (
         <ImageBackground source={House} resizeMode="cover" style={styles.container}>
@@ -244,6 +355,72 @@ const SignUp = ({ navigation }: any) => {
                         errorMessage={errorUserInfo.errorAddressMsg}
                         onChangeText={(val: any) => { updateUserInfo({ address: val }) }}
                     />
+                    <Picker
+                        style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        selectedValue={userInfo.province_id}
+                        onValueChange={(itemValue, itemIndex) =>
+                            handleClickProvince(itemValue)
+                        }
+                    >
+                        <Picker.Item label={Strings.Zoning.PROVINCE} value={0} />
+                        {provinceData &&
+                            provinceData.map((val: any, ind: any) => {
+                                return (
+                                    <Picker.Item key={ind} label={val.name} value={val.id} />
+                                )
+                            })
+                        }
+                    </Picker>
+                    {errorInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorInfo.errorProvinceMsg}</Text>}
+                    <Picker
+                        style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        selectedValue={userInfo.district_id}
+                        onValueChange={(itemValue, itemIndex) =>
+                            handleClickDistrict(userInfo.province_id, itemValue)
+                        }
+                    >
+                        <Picker.Item label={Strings.Zoning.DISTRICT} value={0} />
+                        {districtData &&
+                            districtData.map((val: any, ind: any) => {
+                                return (
+                                    <Picker.Item key={ind} label={val.name} value={val.id} />
+                                )
+                            })
+                        }
+                    </Picker>
+                    {errorInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorInfo.errorDistrictMsg}</Text>}
+                    <Picker
+                        style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        selectedValue={userInfo.ward_id}
+                        onValueChange={(itemValue, itemIndex) =>
+                            handleClickWard(itemValue)}
+                    >
+                        <Picker.Item label={Strings.Zoning.WARD} value={0} />
+                        {wardData &&
+                            wardData.map((val: any, ind: any) => {
+                                return (
+                                    <Picker.Item key={ind} label={val.name} value={val.id} />
+                                )
+                            })
+                        }
+                    </Picker>
+                    {errorInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorInfo.errorWardMsg}</Text>}
+                    <Picker
+                        style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        selectedValue={userInfo.street_id}
+                        onValueChange={(itemValue, itemIndex) =>
+                            handleClickStreet(itemValue)}
+                    >
+                        <Picker.Item label={Strings.Post.SELECT_STREET} value={0} />
+                        {streetData &&
+                            streetData.map((val: any, ind: any) => {
+                                return (
+                                    <Picker.Item key={ind} label={val.name} value={val.id} />
+                                )
+                            })
+                        }
+                    </Picker>
+                    {errorInfo.errorStreet_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorStreet_idMsg}</Text>}
                     <InputCustom
                         secure={true}
                         value={userInfo.password}

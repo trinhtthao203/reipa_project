@@ -113,7 +113,7 @@ const PostDetail = ({ route, navigation }: any) => {
                 />
                 <View style={styles.container_info}>
                     <Icon type={"MaterialIcons"} name="attach-money" color={Constants.Styles.COLOR_AMBER} size={25} />
-                    <Text style={styles.text_info_money}>{(post?.typeof_posts_id == "2" || post?.typeof_posts_id == "4") ? post?.price : Math.abs((post?.price || 0) * (post?.area || 0) / 1000).toFixed(3)} tỷ</Text>
+                    <Text style={styles.text_info_money}>{(post?.typeof_posts_id == "3" || post?.typeof_posts_id == "4") ? `${post?.price} triệu` : `${Math.abs((post?.price || 0) * (post?.area || 0) / 1000).toFixed(3)} tỷ`}</Text>
                 </View>
                 <View style={styles.container_info}>
                     <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="location-outline" color={Constants.Styles.COLOR_AMBER} size={25} />

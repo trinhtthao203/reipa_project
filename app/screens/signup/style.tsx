@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     error_info: {
         color: Constants.Styles.CORLOR_ERROR,
         marginHorizontal: 15,
-        fontSize: 12
+        fontSize: 12,
     },
     label_dropdown_style: {
         fontWeight: "bold",
@@ -159,6 +159,11 @@ const styles = StyleSheet.create({
         color: Constants.Styles.COLOR_BLACK,
         marginTop: 10,
         marginLeft: 10
+    },
+    label_style: {
+        fontWeight: "bold",
+        fontSize: 14,
+        color: Constants.Styles.COLOR_BLACK,
     },
 })
 
