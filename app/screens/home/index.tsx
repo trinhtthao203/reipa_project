@@ -170,7 +170,6 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
         }
         if (typeof dataPayload == "string") {
             var stringImage = dataPayload.split("-");
-            console.log(stringImage)
             showPolygonFromClick(stringImage[0]);
             updateZoningSelect({
                 lat: stringImage[1],

@@ -145,7 +145,7 @@ const ZoningList = ({ navigation }: any) => {
                                 color={arrColor[zoning.status_id - 1]}
                                 style={{ position: "absolute", top: 35, left: -30 }}
                             />
-                            <Text style={{ marginVertical: 15 }}>{zoning.description == "undefined" ? "" : zoning.description}</Text>
+                            {/* <Text style={{ marginVertical: 15 }}>{zoning.description == "undefined" ? "" : zoning.description}</Text> */}
                             <View style={{ flexDirection: "row", display: "flex", justifyContent: "center" }}>
                                 <Button
                                     containerStyle={styles.btn_step1_container}

@@ -645,6 +645,8 @@ const AddPost = ({ route, navigation }: any) => {
                         <Text style={styles.label_dropdown_style}>{Strings.Post.TYPEOF_REAL_ESTATE}</Text>
                         <View style={{ marginBottom: 7 }}>
                             <Picker
+                                dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                                style={{ color: Constants.Styles.COLOR_BLACK }}
                                 selectedValue={Post.typeof_real_estate_id}
                                 onValueChange={(itemValue, itemIndex) =>
                                     updatePostInfo({ typeof_real_estate_id: itemValue })
@@ -663,6 +665,8 @@ const AddPost = ({ route, navigation }: any) => {
                         <Text style={styles.label_dropdown_style}>{Strings.Post.JURIDICAL}</Text>
                         <View style={{ marginBottom: 7 }}>
                             <Picker
+                                dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                                style={{ color: Constants.Styles.COLOR_BLACK }}
                                 selectedValue={Post.juridical_id}
                                 onValueChange={(itemValue, itemIndex) =>
                                     updatePostInfo({ juridical_id: itemValue })
@@ -681,6 +685,8 @@ const AddPost = ({ route, navigation }: any) => {
                         <Text style={styles.label_dropdown_style}>{Strings.Post.FURNITURE}</Text>
                         <View style={{ marginBottom: 7 }}>
                             <Picker
+                                dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                                style={{ color: Constants.Styles.COLOR_BLACK }}
                                 selectedValue={Post.furniture_id}
                                 onValueChange={(itemValue, itemIndex) =>
                                     updatePostInfo({ furniture_id: itemValue })
@@ -698,6 +704,8 @@ const AddPost = ({ route, navigation }: any) => {
                         </View>
                         <Text style={styles.label_style}>Vị trí</Text>
                         <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK }}
                             selectedValue={Post.province_id}
                             onValueChange={(itemValue, itemIndex) =>
                                 handleClickProvince(itemValue)
@@ -714,6 +722,8 @@ const AddPost = ({ route, navigation }: any) => {
                         </Picker>
                         {errorInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorInfo.errorProvinceMsg}</Text>}
                         <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK }}
                             selectedValue={Post.district_id}
                             onValueChange={(itemValue, itemIndex) =>
                                 handleClickDistrict(Post.province_id, itemValue)
@@ -730,6 +740,8 @@ const AddPost = ({ route, navigation }: any) => {
                         </Picker>
                         {errorInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorInfo.errorDistrictMsg}</Text>}
                         <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK }}
                             selectedValue={Post.ward_id}
                             onValueChange={(itemValue, itemIndex) =>
                                 handleClickWard(itemValue)}
@@ -746,6 +758,8 @@ const AddPost = ({ route, navigation }: any) => {
                         {errorInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorInfo.errorWardMsg}</Text>}
                         <Picker
                             selectedValue={Post.street_id}
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK }}
                             onValueChange={(itemValue, itemIndex) =>
                                 handleClickStreet(itemValue)}
                         >
@@ -937,7 +951,7 @@ const AddPost = ({ route, navigation }: any) => {
         }
         #mapid { 
             display: inline-block;
-            height: 90%;
+            height: 82%;
             width: 90%;
             box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         }

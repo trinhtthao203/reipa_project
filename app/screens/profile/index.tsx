@@ -124,7 +124,12 @@ const Profile = ({ navigation }: any) => {
                     </Button>
                 ))
             }
-        </View>
+            <View style={{ alignItems: "center", marginTop: 190 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 17, color: Constants.Styles.CORLOR_BLUE }}>Liên hệ ✉️</Text>
+                <Text >Mọi góp ý xin gửi về : <Text style={{ fontWeight: "bold", color: Constants.Styles.COLOR_CHETWODE_BLUE }}>reipa@gmail.com </Text> </Text>
+                <Text style={{ color: Constants.Styles.COLOR_BLACK }}>Mọi thông tin ứng dụng đều là tham khảo</Text>
+            </View>
+        </View >
     );
 };
 

@@ -102,7 +102,6 @@ const SignUp = ({ navigation }: any) => {
     const handleGetProvinceList = async () => {
         try {
             const result = await userService.handleGetProvinceList();
-            console.log(result);
             setProvinceData(result.data.provinces);
         } catch (err) {
             console.log(err);
@@ -312,7 +311,6 @@ const SignUp = ({ navigation }: any) => {
         }
     }
     React.useEffect(() => {
-        console.log("akb")
         handleGetProvinceList();
     }, []);
 
@@ -357,6 +355,7 @@ const SignUp = ({ navigation }: any) => {
                     />
                     <Picker
                         style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        dropdownIconColor={Constants.Styles.COLOR_BLACK}
                         selectedValue={userInfo.province_id}
                         onValueChange={(itemValue, itemIndex) =>
                             handleClickProvince(itemValue)
@@ -374,6 +373,7 @@ const SignUp = ({ navigation }: any) => {
                     {errorInfo.errorProvinceMsg != null && <Text style={styles.error_info}>{errorInfo.errorProvinceMsg}</Text>}
                     <Picker
                         style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        dropdownIconColor={Constants.Styles.COLOR_BLACK}
                         selectedValue={userInfo.district_id}
                         onValueChange={(itemValue, itemIndex) =>
                             handleClickDistrict(userInfo.province_id, itemValue)
@@ -391,6 +391,7 @@ const SignUp = ({ navigation }: any) => {
                     {errorInfo.errorDistrictMsg != null && <Text style={styles.error_info}>{errorInfo.errorDistrictMsg}</Text>}
                     <Picker
                         style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        dropdownIconColor={Constants.Styles.COLOR_BLACK}
                         selectedValue={userInfo.ward_id}
                         onValueChange={(itemValue, itemIndex) =>
                             handleClickWard(itemValue)}
@@ -407,6 +408,7 @@ const SignUp = ({ navigation }: any) => {
                     {errorInfo.errorWardMsg != null && <Text style={styles.error_info}>{errorInfo.errorWardMsg}</Text>}
                     <Picker
                         style={{ width: "85%", backgroundColor: Constants.Styles.CORLOR_WHITE, color: Constants.Styles.COLOR_GHOST, marginHorizontal: 32 }}
+                        dropdownIconColor={Constants.Styles.COLOR_BLACK}
                         selectedValue={userInfo.street_id}
                         onValueChange={(itemValue, itemIndex) =>
                             handleClickStreet(itemValue)}
