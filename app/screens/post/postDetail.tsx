@@ -24,7 +24,6 @@ const PostDetail = ({ route, navigation }: any) => {
         try {
             const result = await PostService.handleGetPostByID(post_id);
             setPost(result.data[0]);
-            console.log(result.data[0])
             if (result.data[0].typeof_posts_id == 2) {
                 setImages([{ img: `${Constants.Api.IMAGES_URL}/canmua.jpg` }])
             } else if (result.data[0].typeof_posts_id == 4) {
@@ -46,20 +45,62 @@ const PostDetail = ({ route, navigation }: any) => {
         handleGetData();
     }, [])
 
-    const listDetail = [
+    const listDetailDatNenKho = [
+        {
+            title: 'Chiều dài (m)',
+            icon: 'ellipsis-horizontal-outline',
+            value: post?.length
+        },
+        {
+            title: 'Chiều rộng (m)',
+            icon: 'ellipsis-vertical-outline',
+            value: post?.width
+        },
+        {
+            title: 'Mặt tiền (m)',
+            icon: 'home-outline',
+            value: post?.front
+        },
+        {
+            title: 'Hướng',
+            icon: 'compass-outline',
+            value: post?.direction
+        },
+    ]
+    const listDetailNoDatNenKho = [
+        {
+            title: 'Chiều dài (m)',
+            icon: 'ellipsis-horizontal-outline',
+            value: post?.length
+        },
+        {
+            title: 'Chiều rộng (m)',
+            icon: 'ellipsis-vertical-outline',
+            value: post?.width
+        },
+        {
+            title: 'Mặt tiền (m)',
+            icon: 'home-outline',
+            value: post?.front
+        },
+        {
+            title: 'Hướng',
+            icon: 'compass-outline',
+            value: post?.direction
+        },
         {
             title: 'Số phòng',
-            icon: 'call-outline',
+            icon: 'bed-outline',
             value: post?.bedroom
         },
         {
             title: 'Số phòng vệ sinh',
-            icon: 'location-outline',
+            icon: 'water-outline',
             value: post?.toilet
         },
         {
             title: 'Vị trí tầng',
-            icon: 'calendar-outline',
+            icon: 'business-outline',
             value: post?.structure
         },
     ]
@@ -113,7 +154,7 @@ const PostDetail = ({ route, navigation }: any) => {
                 />
                 <View style={styles.container_info}>
                     <Icon type={"MaterialIcons"} name="attach-money" color={Constants.Styles.COLOR_AMBER} size={25} />
-                    <Text style={styles.text_info_money}>{(post?.typeof_posts_id == "3" || post?.typeof_posts_id == "4") ? `${post?.price} triệu` : `${Math.abs((post?.price || 0) * (post?.area || 0) / 1000).toFixed(3)} tỷ`}</Text>
+                    <Text style={styles.text_info_money}>{post?.price} VND </Text>
                 </View>
                 <View style={styles.container_info}>
                     <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name="location-outline" color={Constants.Styles.COLOR_AMBER} size={25} />
@@ -132,12 +173,18 @@ const PostDetail = ({ route, navigation }: any) => {
                 <View style={{ paddingVertical: 30, paddingHorizontal: 10 }}>
                     <Text style={styles.text_info_content}>Chi tiết</Text>
                     {
-                        listDetail.map((item, i) => (
+                        (post?.typeof_real_estate_id == "6" || post?.typeof_real_estate_id == "5") ? listDetailDatNenKho.map((item, i) => (
                             <ListItem key={i} containerStyle={{ padding: 0 }}>
                                 <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} size={20} />
                                 <ListItem.Title><Text style={{ fontWeight: "bold" }}>{item.title}:</Text> {item.value}</ListItem.Title>
                             </ListItem>
-                        ))
+                        )) :
+                            listDetailNoDatNenKho.map((item, i) => (
+                                <ListItem key={i} containerStyle={{ padding: 0 }}>
+                                    <Icon type={Constants.Styles.ICON_STYLE_FONT_IONICON} name={item.icon} size={20} />
+                                    <ListItem.Title><Text style={{ fontWeight: "bold" }}>{item.title}:</Text> {item.value}</ListItem.Title>
+                                </ListItem>
+                            ))
                     }
                     <Text style={styles.text_info_content}>Mô tả:</Text>
                     <ListItem.Title><Text>{post?.description}</Text></ListItem.Title>

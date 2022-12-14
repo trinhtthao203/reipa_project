@@ -45,7 +45,7 @@ const AddPost = ({ route, navigation }: any) => {
     const [visible1, setVisible1] = useState(false);
     const [typeof_post, setTypeof_post] = useState();
     const toggleDialog1 = () => {
-        if (geojsonBorder) {
+        if (Post.ward_id) {
             setVisible1(!visible1);
             updateErrorInfo({
                 errorProvinceMsg: "",
@@ -332,6 +332,7 @@ const AddPost = ({ route, navigation }: any) => {
         const { typeof_post } = route.params;
         if (typeof_post) {
             setTypeof_post(typeof_post);
+            updatePostInfo({ typeof_posts_id: typeof_post });
         }
         handleGetTypeRealEstateList();
         handleGetFurnitureDataList();
@@ -374,7 +375,7 @@ const AddPost = ({ route, navigation }: any) => {
         if (typeof dataPayload === "number") {
             updatePostInfo({ area: dataPayload });
         }
-        updatePostInfo({ coordinates: JSON.stringify(dataPayload.features[0].geometry) });
+        updatePostInfo({ coordinates: dataPayload.features[0].geometry });
         toggleDialog1();
     }
 
@@ -504,13 +505,16 @@ const AddPost = ({ route, navigation }: any) => {
 
     const handleSave = async () => {
         if (checkError()) {
-            console.log(Post)
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
             const formData = new FormData();
             formData.append("title", Post.title);
             formData.append("area", Post.area);
+            formData.append("length", Post.length);
+            formData.append("width", Post.width);
+            formData.append("front", Post.front);
+            formData.append("direction", Post.direction);
             formData.append("price", Post.price);
             formData.append("furniture_id", Post.furniture_id);
             formData.append("juridical_id", Post.juridical_id);
@@ -569,7 +573,6 @@ const AddPost = ({ route, navigation }: any) => {
     }
     const handleUpdate = async () => {
         if (checkError()) {
-            console.log(Post);
             setShowDialog(true);
             setTypeDialog(Strings.System.LOADNING);
             setContentDialog(Strings.Message.WAITTING_MESSAGE);
@@ -577,6 +580,10 @@ const AddPost = ({ route, navigation }: any) => {
             formData.append("id", Post.id);
             formData.append("title", Post.title);
             formData.append("area", Post.area);
+            formData.append("length", Post.length);
+            formData.append("width", Post.width);
+            formData.append("front", Post.front);
+            formData.append("direction", Post.direction);
             formData.append("price", Post.price);
             formData.append("furniture_id", Post.furniture_id);
             formData.append("juridical_id", Post.juridical_id);
@@ -702,7 +709,7 @@ const AddPost = ({ route, navigation }: any) => {
                             </Picker>
                             {errorInfo.errorFurniture_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorFurniture_idMsg}</Text>}
                         </View>
-                        <Text style={styles.label_style}>Vị trí</Text>
+                        <Text style={styles.label_style}>Vị trí *</Text>
                         <Picker
                             dropdownIconColor={Constants.Styles.COLOR_BLACK}
                             style={{ color: Constants.Styles.COLOR_BLACK }}
@@ -773,7 +780,6 @@ const AddPost = ({ route, navigation }: any) => {
                             }
                         </Picker>
                         {errorInfo.errorStreet_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorStreet_idMsg}</Text>}
-
                         <TouchableOpacity
                             onPress={toggleDialog1}
                         >
@@ -794,54 +800,94 @@ const AddPost = ({ route, navigation }: any) => {
                             </ImageBackground>
                         </TouchableOpacity>
                         {errorInfo.errorCoordinatesMsg != null && <Text style={styles.error_info}>{errorInfo.errorCoordinatesMsg}</Text>}
-                        {(typeof_post == 1 || typeof_post == 3) &&
-                            <TextInput
-                                secure={false}
-                                value={Post.address}
-                                label={Strings.Zoning.ADDRESS}
-                                errorMessage={errorInfo.errorAddressMsg}
-                                onChangeText={(val: any) => { updatePostInfo({ address: val }) }}
-                            />}
                         <TextInput
                             secure={false}
-                            keyboardType="numeric"
-                            value={Post.area + ""}
-                            label={Strings.Zoning.AREA}
-                            onChangeText={(val: any) => { handleChangeArea(val) }}
+                            value={Post.address}
+                            label={Strings.Zoning.ADDRESS}
+                            errorMessage={errorInfo.errorAddressMsg}
+                            onChangeText={(val: any) => { updatePostInfo({ address: val }) }}
                         />
-                        {errorInfo.errorAreaMsg != null && <Text style={styles.error_info}>{errorInfo.errorAreaMsg}</Text>}
                         <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.price + ""}
-                            label={(Post.typeof_posts_id == "3" || Post.typeof_posts_id == "4") ? "Mức giá" : Strings.Post.PRICE}
+                            label={"Mức giá (VND) *"}
                             onChangeText={(val: any) => { updatePostInfo({ price: val }) }}
                         />
                         {errorInfo.errorPriceMsg != null && <Text style={styles.error_info}>{errorInfo.errorPriceMsg}</Text>}
-                        <TextInput
+                        {(typeof_post == 1 || typeof_post == 3) &&
+                            <>
+                                <TextInput
+                                    secure={false}
+                                    keyboardType="numeric"
+                                    value={Post.length}
+                                    label={Strings.Post.LENGTH}
+                                    errorMessage={errorInfo.errorLengthMsg}
+                                    onChangeText={(val: any) => { updatePostInfo({ length: val }) }}
+                                />
+                                <TextInput
+                                    secure={false}
+                                    keyboardType="numeric"
+                                    value={Post.width}
+                                    label={Strings.Post.WIDTH}
+                                    errorMessage={errorInfo.errorWidthMsg}
+                                    onChangeText={(val: any) => {
+                                        updatePostInfo({ width: val })
+                                        handleChangeArea(((Post.length || 0) * val).toFixed(2));
+                                    }}
+                                />
+                                <TextInput
+                                    secure={false}
+                                    keyboardType="numeric"
+                                    value={Post.area ? Post.area + "" : "0"}
+                                    label={Strings.Zoning.AREA}
+                                    onChangeText={(val: any) => { handleChangeArea(val) }}
+                                />
+                            </>
+                        }
+                        {errorInfo.errorAreaMsg != null && <Text style={styles.error_info}>{errorInfo.errorAreaMsg}</Text>}
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.bedroom + ""}
                             label={Strings.Post.BEDROOM}
                             onChangeText={(val: any) => { updatePostInfo({ bedroom: val }) }}
-                        />
-                        <TextInput
+                        />}
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.toilet + ""}
                             label={Strings.Post.TOILET}
                             onChangeText={(val: any) => { updatePostInfo({ toilet: val }) }}
-                        />
-                        <TextInput
+                        />}
+                        <Text style={styles.label_style}>Hướng</Text>
+                        <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK }}
+                            selectedValue={Post.direction}
+                            onValueChange={(itemValue, itemIndex) => {
+                                updatePostInfo({ direction: itemValue })
+                            }}
+                        >
+                            <Picker.Item label={"Bắc"} value={"Bắc"} />
+                            <Picker.Item label={"Nam"} value={"Nam"} />
+                            <Picker.Item label={"Đông"} value={"Đông"} />
+                            <Picker.Item label={"Tây"} value={"Tây"} />
+                            <Picker.Item label={"Đông Bắc"} value={"Đông Bắc"} />
+                            <Picker.Item label={"Đông Nam"} value={"Đông Nam"} />
+                            <Picker.Item label={"Tây Bắc"} value={"Tây Bắc"} />
+                            <Picker.Item label={"Tây Nam"} value={"Tây Nam"} />
+                        </Picker>
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.structure + ""}
                             label={Strings.Post.STRUCTURE}
                             onChangeText={(val: any) => { updatePostInfo({ structure: val }) }}
-                        />
+                        />}
                         {(typeof_post == 1 || typeof_post == 3) && (
                             <>
-                                <Text style={styles.label_style}>Hình ảnh</Text>
+                                <Text style={styles.label_style}>Hình ảnh *</Text>
                                 <ScrollView horizontal={true} style={{ width: "100%", height: "100%" }}>
                                     <FlatList
                                         data={imageList.map((i) => i)}
@@ -881,7 +927,7 @@ const AddPost = ({ route, navigation }: any) => {
                             </>
                         )}
                         {errorInfo.errorDataImageMsg != null && <Text style={styles.error_info}>{errorInfo.errorDataImageMsg}</Text>}
-                        <Text style={styles.label_style}>Mô tả</Text>
+                        <Text style={styles.label_style}>Mô tả *</Text>
                         <TextInput
                             multiline={true}
                             numberOfLines={4}

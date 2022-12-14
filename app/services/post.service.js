@@ -2,13 +2,17 @@ import Constants from "../constants";
 import * as apiProcessor from "./apiProcessor";
 
 class Post {
-    handleGetPostByDistance = async (lat, lng, distance, status_id) => {
+    handleGetPostByDistance = async (lat, lng, distance, status_id, price, area, typeof_post, typeof_real_estate) => {
         try {
             const result = apiProcessor.post(Constants.ApiPath.GET_POST_BY_DISTANCE, {
                 lat: lat,
                 lng: lng,
                 distance: distance,
-                status_id: status_id
+                status_id: status_id,
+                price: price,
+                area: area,
+                typeof_post: typeof_post,
+                typeof_real_estate: typeof_real_estate
             });
             return result;
         } catch (err) {

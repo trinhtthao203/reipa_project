@@ -101,6 +101,10 @@ export interface IDataPost {
     price?: number;
     address?: string;
     area?: number;
+    length?: number;
+    width?: number;
+    front?: number;
+    direction?: string;
     juridical_id?: string;
     juridical_name?: string;
     furniture_id?: string;
@@ -133,6 +137,10 @@ export interface IErrorDataPost {
     errorPriceMsg?: string;
     errorAddressMsg?: string;
     errorAreaMsg?: string;
+    errorWidthMsg?: string;
+    errorLengthMsg?: string;
+    errorFrontMsg?: string;
+    errorDirectionMsg?: string;
     errorJuridical_idMsg?: string;
     errorFurniture_idMsg?: string;
     errorStructureMsg?: string;
@@ -157,4 +165,12 @@ export interface IAddressStore {
     province_id?: string;
     district_id?: string;
     ward_id?: string;
+}
+
+
+export interface IPostFilter {
+    typeof_real_estate?: string;
+    typeof_post?: string;
+    price?: number;
+    area?: number;
 }

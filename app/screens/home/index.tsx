@@ -7,11 +7,13 @@ import Geolocation from '@react-native-community/geolocation';
 import ScreenName from "@app/navigation/screenName";
 import { useDispatch, useSelector } from "react-redux";
 //element
+import TextInput from "@app/components/TextInput";
+import { Picker } from "@react-native-picker/picker";
 import { ScrollView, View } from "react-native"
 import { WebView } from "react-native-webview";
 import DialogCustom from "@app/components/Dialog";
-import { BottomSheet, Button, ListItem } from "@rneui/themed";
-import { IDataZoning, IDataPost, IDataPostSelect } from "@app/commons/interfaces";
+import { BottomSheet, Button, Input, ListItem } from "@rneui/themed";
+import { IDataZoning, IDataPost, IDataPostSelect, IPostFilter } from "@app/commons/interfaces";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
     storeAddressInfo
@@ -184,6 +186,20 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
         }
     }
 
+    const [postFilter, setPostFilter] = React.useState<IPostFilter>({
+        price: 10000000000,
+        area: 500,
+        typeof_post: "0",
+        typeof_real_estate: "0"
+    });
+    const updatePostFilter = (newState: IPostFilter) => {
+        setPostFilter((prevState) => ({
+            ...prevState,
+            ...newState,
+        }));
+    };
+
+
     const [postList, setPostList] = useState<IDataPostSelect>({
         listDataPost: new Array<IDataPost>(),
     });
@@ -204,7 +220,9 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                     area: post.area,
                     dis_m: post.dis_m,
                     lat: post.geometry.coordinates[0],
-                    lng: post.geometry.coordinates[1]
+                    lng: post.geometry.coordinates[1],
+                    typeof_real_estate: post.typeof_real_estate_id,
+                    typeof_post: post.typeof_posts_id,
                 }
             ))]
         })
@@ -220,7 +238,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
     const getPostByDistance = async (lat: any, lng: any) => {
         setIsVisible(false);
         setIsVisiblePost(!isVisiblePost);
-        const result = await postService.handleGetPostByDistance(lat, lng, 20000, 2);
+        const result = await postService.handleGetPostByDistance(lat, lng, 20000, 2, postFilter.price, postFilter.area, postFilter.typeof_post, postFilter.typeof_real_estate);
         handleUpdatePostList(result.data);
         result.data.map(async (post: any, ind: any) => {
             if (post.typeof_posts_id == 2) {
@@ -232,10 +250,33 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                 arr[post.id] = resultImage.data[0].name;
             }
             updateArr(arr);
-        })
+        });
+    }
+
+    const [typeRealEstateData, setRealEstateData] = React.useState([]);
+    const handleGetTypeRealEstateList = async () => {
+        try {
+            const result = await postService.handleGetTypeofRealEstate();
+            setRealEstateData(result.data);
+            setIsLoading(false);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    const [typePostData, setTypePostData] = React.useState([]);
+    const handleGetTypePostList = async () => {
+        try {
+            const result = await postService.handleGetTypeofPost();
+            setTypePostData(result.data);
+            setIsLoading(false);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     useEffect(() => {
+        handleGetTypePostList();
+        handleGetTypeRealEstateList();
         handleGetLocation();
         handleGetZoningPolygonList();
         handleGetZoningPolylineList();
@@ -287,6 +328,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
     }
 
     const goZoningDetailScreen = async () => {
+        updatePostFilter({ price: 10000000000, area: 10000, typeof_post: "0", typeof_real_estate: "0" });
         navigation.navigate(ScreenName.ZONINGDETAIL, {
             zoning_id: zoningSelect.id
         })
@@ -305,6 +347,28 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
         handleGetZoningPolylineList();
         handleGetZoningPolygonList();
         handleGetPostGeoJSONList();
+    }
+    const handleClickTypeOfRealEstate = (typeof_real_estate: any) => {
+        updatePostFilter({ typeof_real_estate: typeof_real_estate });
+    }
+    const handleClickTypeOfPost = (typeof_post: any) => {
+        updatePostFilter({ typeof_post: typeof_post });
+    }
+
+    const handleFilter = async () => {
+        const result = await postService.handleGetPostByDistance(zoningSelect.lat, zoningSelect.lng, 20000, 2, postFilter.price, postFilter.area, postFilter.typeof_post, postFilter.typeof_real_estate);
+        handleUpdatePostList(result.data);
+        result.data.map(async (post: any, ind: any) => {
+            if (post.typeof_posts_id == 2) {
+                arr[post.id] = "canmua.jpg"
+            } else if (post.typeof_posts_id == 4) {
+                arr[post.id] = "canthue.jpg"
+            } else {
+                const resultImage = await postService.handleGetOneImageByPostID(post.id);
+                arr[post.id] = resultImage.data[0].name;
+            }
+            updateArr(arr);
+        });
     }
 
     if (isLoading) {
@@ -346,8 +410,82 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                         )}
                     </View>
                 </BottomSheet>
-                <BottomSheet modalProps={{}} isVisible={isVisiblePost} onBackdropPress={() => setIsVisiblePost(!isVisiblePost)}>
-                    <ScrollView style={{ maxHeight: 300 }}>
+                <BottomSheet modalProps={{}} isVisible={isVisiblePost} onBackdropPress={() => {
+                    setIsVisiblePost(!isVisiblePost)
+                    updatePostFilter({ price: 10000000000, area: 10000, typeof_post: "0", typeof_real_estate: "0" });
+                }}>
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                        <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK, backgroundColor: Constants.Styles.CORLOR_WHITE, width: "50%" }}
+                            selectedValue={postFilter.typeof_real_estate}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickTypeOfRealEstate(itemValue)
+                            }
+                        >
+                            <Picker.Item style={{ fontSize: 14 }} label={"Loại bất động sản"} value={0} />
+                            {typeRealEstateData &&
+                                typeRealEstateData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item style={{ fontSize: 14 }} key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                        <Picker
+                            dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                            style={{ color: Constants.Styles.COLOR_BLACK, backgroundColor: Constants.Styles.CORLOR_WHITE, width: "50%" }}
+                            selectedValue={postFilter.typeof_post}
+                            onValueChange={(itemValue, itemIndex) =>
+                                handleClickTypeOfPost(itemValue)
+                            }
+                        >
+                            <Picker.Item style={{ fontSize: 14 }} label={"Loại bài đăng"} value={0} />
+                            {typePostData &&
+                                typePostData.map((val: any, ind: any) => {
+                                    return (
+                                        <Picker.Item style={{ fontSize: 14 }} key={ind} label={val.name} value={val.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                    </View>
+                    <View style={{ display: "flex", flexDirection: "row" }}>
+                        <View style={{ width: "40%" }}>
+                            <Text style={{ fontWeight: "bold", fontSize: 13, backgroundColor: Constants.Styles.CORLOR_WHITE, paddingLeft: 15 }}>Giá (VND)</Text>
+                            <Input
+                                containerStyle={{ backgroundColor: Constants.Styles.CORLOR_WHITE, height: 30 }}
+                                inputContainerStyle={{ borderBottomWidth: 0, margin: 0, height: 30 }}
+                                inputStyle={{ fontSize: 14 }}
+                                keyboardType="numeric"
+                                value={postFilter.price + ""}
+                                placeholder={"Giá (VND)"}
+                                onChangeText={(val: any) => { updatePostFilter({ price: val }) }}
+                            />
+                        </View>
+                        <View style={{ width: "40%" }}>
+                            <Text style={{ fontWeight: "bold", fontSize: 13, backgroundColor: Constants.Styles.CORLOR_WHITE, paddingLeft: 15 }}>Diện tích (m2)</Text>
+                            <Input
+                                containerStyle={{ backgroundColor: Constants.Styles.CORLOR_WHITE, height: 30 }}
+                                inputContainerStyle={{ borderBottomWidth: 0, margin: 0, height: 30 }}
+                                inputStyle={{ fontSize: 14 }}
+                                keyboardType="numeric"
+                                value={postFilter.area + ''}
+                                placeholder={"Diện tích (m2)"}
+                                onChangeText={(val: any) => { updatePostFilter({ area: val }) }}
+                            />
+                        </View>
+                        <Button
+                            containerStyle={{ width: "20%" }}
+                            buttonStyle={{
+                                height: 47.5,
+                                backgroundColor: 'rgba(111, 202, 186, 1)',
+                                borderRadius: 5,
+                            }}
+                            onPress={() => handleFilter()}
+                        >Lọc</Button>
+                    </View>
+                    <ScrollView style={{ maxHeight: 400 }}>
                         {postList.listDataPost.length > 0 ? postList.listDataPost.map((post: any, i: any) => {
                             return (
                                 <ListItem containerStyle={{ borderWidth: 1, borderColor: Constants.Styles.COLOR_ATHENSGRAY }} key={i} onPress={() => console.log(post.id)}>
@@ -359,7 +497,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         <ListItem.Title>
                                             <View style={{ width: 270, justifyContent: "center" }}>
                                                 <Text style={{ fontWeight: "bold", fontSize: 13 }}>{post.title}</Text>
-                                                {post.price && <Text style={{ fontSize: 12 }}>🪙~{Math.abs(post.price * post.area / 1000).toFixed(2)} tỷ</Text>}
+                                                {post.price && <Text style={{ fontSize: 12 }}>🪙~{post.price} VND</Text>}
                                                 {post.address && <Text style={{ fontSize: 12 }}>📍{post.address}</Text>}
                                                 <View style={{ flexDirection: "row" }}>
                                                     <Button title={"Xem chi tiết"} type="clear" titleStyle={{ color: Constants.Styles.COLOR_CHETWODE_BLUE, fontSize: 15 }} onPress={() => goPostDetailScreen(post.id)} />
@@ -453,7 +591,6 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                             <body style="padding: 0; margin: 0">
                             <div id="mapid" style="width: 100%; height: 100vh;"></div>
                             <button id="goButton" class="button"><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
-                            
                             <script src="https://unpkg.com/leaflet@latest/dist/leaflet-src.js"></script>
                             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
                             <script src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.js"></script>
@@ -494,6 +631,13 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         "Google Map":googleStreets,
                                         "OpenStreetMap": osm,
                                     };
+                                    var optionIMG = {
+                                        opacity: 0.5
+                                    };
+
+                                    var imageUrl = '${Constants.Api.IMAGES_URL}/qhct.jpg',
+                                    imageBounds = [[10.078374, 105.694685], [9.988524, 105.823085]];
+                                    L.imageOverlay(imageUrl, imageBounds,optionIMG).addTo(mymap);
 
                                 var drawnItems, drawControl;
                                 //khai báo featuregroup để vẽ
@@ -698,6 +842,7 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                     onEachFeature:onEachFeaturePolyline
                                 })
 
+                                var corridor; 
                                 function onEachFeaturePolyline(feature, layer) {     
                                     var arrGeoPolyline;
                                     if(feature.geometry.type=="MultiLineString"){
@@ -713,17 +858,15 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         corridor: feature.properties.width, // meters
                                         className: 'route-corridor', 
                                     };
-                                    var corridor = L.corridor([arrLatlngGeoPolyline], options);
+                                    corridor = L.corridor([arrLatlngGeoPolyline], options);
                                     corridor.addTo(mymap);
-
-                                    var overlays = {
-                                        "Bài đăng":geoPointLayer,
-                                        "Quy hoạch đường":corridor,
-                                        "Quy hoạch vùng":geoPolygonLayer
-                                    };
-
-                                    L.control.layers(baseLayers, overlays).addTo(mymap);
                                 }
+                                var overlays = {
+                                    "Bài đăng":geoPointLayer,
+                                    "Quy hoạch đường":corridor,
+                                    "Quy hoạch vùng":geoPolygonLayer
+                                };
+                                L.control.layers(baseLayers, overlays).addTo(mymap);
 
                                 function handleDetail(id){
                                     window.ReactNativeWebView.postMessage(JSON.stringify(id));
