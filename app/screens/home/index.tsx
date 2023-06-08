@@ -632,12 +632,13 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                         "OpenStreetMap": osm,
                                     };
                                     var optionIMG = {
-                                        opacity: 0.5
+                                        opacity: 0.6
                                     };
 
-                                    var imageUrl = '${Constants.Api.IMAGES_URL}/qhct.jpg',
-                                    imageBounds = [[10.078374, 105.694685], [9.988524, 105.823085]];
-                                    L.imageOverlay(imageUrl, imageBounds,optionIMG).addTo(mymap);
+                                var imageUrl = '${Constants.Api.IMAGES_URL}/datnenvietnam.jpg';
+                                imageBounds = [[10.078374, 105.694685], [9.988524, 105.823085]];
+                                var layerImg = L.imageOverlay(imageUrl, imageBounds,optionIMG);
+                                layerImg.addTo(mymap);
 
                                 var drawnItems, drawControl;
                                 //khai báo featuregroup để vẽ
@@ -864,7 +865,8 @@ const Home: React.FunctionComponent<BottomSheetComponentProps> = ({ navigation }
                                 var overlays = {
                                     "Bài đăng":geoPointLayer,
                                     "Quy hoạch đường":corridor,
-                                    "Quy hoạch vùng":geoPolygonLayer
+                                    "Quy hoạch vùng":geoPolygonLayer,
+                                    "Quy hoạch Ninh Kiều": layerImg
                                 };
                                 L.control.layers(baseLayers, overlays).addTo(mymap);
 

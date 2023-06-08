@@ -75,13 +75,13 @@ const AddPost = ({ route, navigation }: any) => {
 
     const [Post, setPost] = React.useState<IDataPost>({
         user_id: userInfo.id || "",
-        title: "Nhà trệt 2 lầu và lửng",
-        address: "Đường Số 3, Phường An Khánh, Quận Ninh Kiều, Cần Thơ",
-        description: "Nhà có mặt tiền hướng ra công viên, có giấy tờ đầy đủ, giá cả thương lượng",
-        area: 99.4,
-        price: 155.94,
-        bedroom: 3,
-        toilet: 3,
+        title: "",
+        address: "",
+        description: "",
+        area: 0,
+        price: 0,
+        bedroom: 0,
+        toilet: 0,
         structure: 0,
         typeof_posts_id: typeof_post,
         typeof_real_estate_id: "10",
@@ -402,7 +402,12 @@ const AddPost = ({ route, navigation }: any) => {
                         setShowDialog(true);
                         setTypeDialog("warning");
                         setContentDialog(Strings.Zoning.WARNING_MAX_IMAGE);
-                    } else {
+                    } else if (images.length < 4) {
+                        setShowDialog(true);
+                        setTypeDialog("warning");
+                        setContentDialog(Strings.Zoning.WARNING_MIN_IMAGE);
+                    }
+                    else {
                         updatePostInfo({ dataImage: images });
                         let arrImages = images.map((i: any, ind: any) => { return i.path })
                         setImageList(arrImages);
@@ -689,26 +694,30 @@ const AddPost = ({ route, navigation }: any) => {
                             </Picker>
                             {errorInfo.errorJuridical_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorJuridical_idMsg}</Text>}
                         </View>
-                        <Text style={styles.label_dropdown_style}>{Strings.Post.FURNITURE}</Text>
-                        <View style={{ marginBottom: 7 }}>
-                            <Picker
-                                dropdownIconColor={Constants.Styles.COLOR_BLACK}
-                                style={{ color: Constants.Styles.COLOR_BLACK }}
-                                selectedValue={Post.furniture_id}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    updatePostInfo({ furniture_id: itemValue })
-                                }
-                            >
-                                {furnitureData &&
-                                    furnitureData.map((val: any, ind: any) => {
-                                        return (
-                                            <Picker.Item key={ind} label={val.name} value={val.id} />
-                                        )
-                                    })
-                                }
-                            </Picker>
-                            {errorInfo.errorFurniture_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorFurniture_idMsg}</Text>}
-                        </View>
+
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "5" || Post.typeof_real_estate_id == "9") &&
+                            <>
+                                <Text style={styles.label_dropdown_style}>{Strings.Post.FURNITURE}</Text>
+                                <View style={{ marginBottom: 7 }}>
+                                    <Picker
+                                        dropdownIconColor={Constants.Styles.COLOR_BLACK}
+                                        style={{ color: Constants.Styles.COLOR_BLACK }}
+                                        selectedValue={Post.furniture_id}
+                                        onValueChange={(itemValue, itemIndex) =>
+                                            updatePostInfo({ furniture_id: itemValue })
+                                        }
+                                    >
+                                        {furnitureData &&
+                                            furnitureData.map((val: any, ind: any) => {
+                                                return (
+                                                    <Picker.Item key={ind} label={val.name} value={val.id} />
+                                                )
+                                            })
+                                        }
+                                    </Picker>
+                                    {errorInfo.errorFurniture_idMsg != null && <Text style={styles.error_info}>{errorInfo.errorFurniture_idMsg}</Text>}
+                                </View>
+                            </>}
                         <Text style={styles.label_style}>Vị trí *</Text>
                         <Picker
                             dropdownIconColor={Constants.Styles.COLOR_BLACK}
@@ -846,14 +855,14 @@ const AddPost = ({ route, navigation }: any) => {
                             </>
                         }
                         {errorInfo.errorAreaMsg != null && <Text style={styles.error_info}>{errorInfo.errorAreaMsg}</Text>}
-                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9" || Post.typeof_real_estate_id == "5") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.bedroom + ""}
                             label={Strings.Post.BEDROOM}
                             onChangeText={(val: any) => { updatePostInfo({ bedroom: val }) }}
                         />}
-                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9" || Post.typeof_real_estate_id == "5") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.toilet + ""}
@@ -878,7 +887,7 @@ const AddPost = ({ route, navigation }: any) => {
                             <Picker.Item label={"Tây Bắc"} value={"Tây Bắc"} />
                             <Picker.Item label={"Tây Nam"} value={"Tây Nam"} />
                         </Picker>
-                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9") && <TextInput
+                        {!(Post.typeof_real_estate_id == "6" || Post.typeof_real_estate_id == "9" || Post.typeof_real_estate_id == "5") && <TextInput
                             secure={false}
                             keyboardType="numeric"
                             value={Post.structure + ""}
@@ -1108,14 +1117,16 @@ const AddPost = ({ route, navigation }: any) => {
                 targetGroup.addLayer(sourceLayer);
             }
         }
+
         //..................................>> Xử lý khi mở lại thêm bai dang<<..................................
+        
         var geojsonDataRN = ${JSON.stringify(Post.coordinates)};
         if(geojsonDataRN){
             k++;
-            var geoJsonGroup = L.geoJSON([${Post.coordinates}]);
+            var geoJsonGroup = L.geoJSON(geojsonDataRN);
             addNonGroupLayers(geoJsonGroup, drawnItems);  
-        }
-
+        }  
+      
         //..................................>> Xử lý sau khi UPLOAD FILE <<..................................
         var geojsonUpload;
         (function(){
